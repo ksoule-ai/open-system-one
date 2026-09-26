@@ -315,7 +315,8 @@ OpenRouter, the HF endpoint, the SDK, and Jev; Ollama is pending.
 - **Mellea 0.8.0 sends `"tools": null`**, which makes OpenRouter drop providers without tool support;
   needs a thin workaround before OpenRouter profiles can use SambaNova/Parasail. **Postponed**
   (2026-09-26): the MVP targets the HF endpoint first; revisit when OpenRouter profiles are added.
-- `top_logprobs` cap is 20 on OpenRouter and on vLLM (default). Temperature 0 gives raw logprobs on
+- `top_logprobs` cap is 20 on OpenRouter and on vLLM by default; our HF endpoint runs with
+  `--max-logprobs 256` (container args, 2026-09-26), used by `oso-granite-3b-wide` for up to 200 options. Temperature 0 gives raw logprobs on
   every provider tested.
 - Assistant prefill works on vLLM (`continue_final_message`), not reliably on OpenRouter; answer
   tokens may carry a leading space.

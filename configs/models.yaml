@@ -11,7 +11,7 @@ profiles:
     release_date: "2026-09-26"
     prompt: default@1
     strategy: warm_fanout
-    top_logprobs: 20                      # vLLM's default max_logprobs
+    top_logprobs: 20                      # the endpoint allows 256 (see oso-granite-3b-wide)
     max_options: 20
     max_tokens: 1                         # vLLM returns every position; 1 is enough with first_token
     temperature: 0                        # vLLM logprobs are raw regardless (Phase 0)
@@ -21,8 +21,8 @@ profiles:
 
   oso-granite-3b-wide:
     # Same endpoint and model as oso-granite-3b, for choices with up to 200 options (the Decision
-    # Index has up to 151). NEEDS the vLLM endpoint relaunched with --max-logprobs 256; with the
-    # default (20) every call with more than 10 options fails with a 400.
+    # Index has up to 151). Relies on the endpoint's vLLM running with --max-logprobs 256 (set in
+    # its container args on 2026-09-26); without it, calls asking for more than 20 fail with a 400.
     backend: hf_endpoint
     base_url: ${HF_ENDPOINT_URL}
     api_key_env: HF_TOKEN
