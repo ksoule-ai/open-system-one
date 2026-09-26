@@ -27,9 +27,9 @@ profiles:
     base_url: ${HF_ENDPOINT_URL}
     api_key_env: HF_TOKEN
     model_id: ibm-granite/granite-switch-4.1-3b-preview
-    description: Granite 4.1 3B (HF vLLM), up to 200 options per choice, prompt default@2
+    description: Granite 4.1 3B (HF vLLM), up to 200 options per choice, prompt default@3
     release_date: "2026-09-26"
-    prompt: default@2
+    prompt: default@3                     # frozen for the Decision Index run
     strategy: warm_fanout
     top_logprobs: 256                     # needs vLLM --max-logprobs >= 256
     base_top_logprobs: 20

@@ -306,6 +306,11 @@ providers without tool support that get filtered by `tools: null` (workaround pe
 
 Inside the Claude Code sandbox, uv can't write `~/.cache/uv`; set `UV_CACHE_DIR=$TMPDIR/uv-cache`.
 
+Decision Index (2026-09-26): full 0.2 suite through the kit's `http` engine against
+`oso-granite-3b-wide` + `default@3` → **23.58**, 100% coverage, 33.8 min on 15 × L4. Details and scores in
+`results/decision-index/`. House rules apply from here: `default@3` is the Decision Index prompt, and the
+suite is never used to tune prompts.
+
 Phase 0 results so far (2026-09-26; details in `spikes/FINDINGS.md`). Spikes 1–6 are done for
 OpenRouter, the HF endpoint, the SDK, and Jev; Ollama is pending.
 - **OpenRouter returns one logprob position at most**, often the *last* token → `max_tokens: 1` and
