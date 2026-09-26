@@ -46,38 +46,63 @@ class _Unique:
     reading: LabelReading | None = None
 
 
+def _limit_error(key: str, kind: str, q, error_type: str, msg: str, **ctx) -> dict[str, Any]:
+    n = len(q.criteria)
+    return {
+        "type": error_type,
+        "loc": ["body", "questions", key, kind, "criteria"],
+        "msg": msg,
+        "input": q.model_dump(mode="json")["criteria"],
+        "ctx": {"field_type": "criteria", "actual_length": n, **ctx},
+    }
+
+
 def check_limits(request: SystemOneRequest, profile: Profile, prompt: PromptConfig) -> None:
-    """Enforce the profile's option cap (the one declared deviation from Jev's limits)."""
+    """Option and level limits. Messages use Jev's wording ("options per choice", "a choice needs
+    at least two options", "a score takes 2 to 10 levels"), which clients such as the Decision
+    Index kit match to classify capacity rejections. The per-profile option cap is the one
+    declared deviation from Jev's limits."""
     errors = []
     for key, wrapped in request.questions.items():
         q = wrapped.root
         if isinstance(q, ChoiceQuestion):
-            n, limit, kind = len(q.criteria), profile.max_options, "choice"
-            if n == 0:
+            n, limit = len(q.criteria), profile.max_options
+            if n < 2:
                 errors.append(
-                    {
-                        "type": "too_short",
-                        "loc": ["body", "questions", key, "choice", "criteria"],
-                        "msg": "Choice questions need at least one option",
-                        "input": q.criteria,
-                        "ctx": {"field_type": "Dictionary", "min_length": 1, "actual_length": 0},
-                    }
+                    _limit_error(
+                        key,
+                        "choice",
+                        q,
+                        "too_short",
+                        f"a choice needs at least two options; got {n}",
+                        min_length=2,
+                    )
                 )
-                continue
+            elif n > limit:
+                errors.append(
+                    _limit_error(
+                        key,
+                        "choice",
+                        q,
+                        "too_long",
+                        f"This model accepts at most {limit} options per choice; got {n}",
+                        max_length=limit,
+                    )
+                )
         elif isinstance(q, ScoreQuestion):
-            n, limit, kind = len(q.criteria), len(prompt.questions.score.labels), "score"
-        else:
-            continue
-        if n > limit:
-            errors.append(
-                {
-                    "type": "too_long",
-                    "loc": ["body", "questions", key, kind, "criteria"],
-                    "msg": f"This model accepts at most {limit} {kind} options; got {n}",
-                    "input": q.model_dump(mode="json")["criteria"],
-                    "ctx": {"field_type": "criteria", "max_length": limit, "actual_length": n},
-                }
-            )
+            n, limit = len(q.criteria), len(prompt.questions.score.labels)
+            if n < 2 or n > limit:
+                errors.append(
+                    _limit_error(
+                        key,
+                        "score",
+                        q,
+                        "too_short" if n < 2 else "too_long",
+                        f"a score takes 2 to {limit} levels; got {n}",
+                        min_length=2,
+                        max_length=limit,
+                    )
+                )
     if errors:
         raise LimitError(errors)
 

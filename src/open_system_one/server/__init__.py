@@ -12,7 +12,13 @@ from fastapi.responses import JSONResponse
 from starlette.background import BackgroundTask
 from starlette.datastructures import MutableHeaders
 
-from open_system_one.backends import BackendError, BackendOverloaded, ModelClient, make_client
+from open_system_one.backends import (
+    BackendError,
+    BackendOverloaded,
+    ContextLengthExceeded,
+    ModelClient,
+    make_client,
+)
 from open_system_one.config import Registry
 from open_system_one.engine import InvariantError, LimitError, answer_request
 from open_system_one.prompts.config import PromptConfig, load_prompt
@@ -156,6 +162,16 @@ def create_app(
         except LimitError as e:
             task, headers = finish(422, None, str(e))
             return JSONResponse({"detail": e.errors}, 422, headers=headers, background=task)
+        except ContextLengthExceeded as e:
+            task, headers = finish(422, None, str(e))
+            detail = [
+                {
+                    "type": "value_error",
+                    "loc": ["body", "state"],
+                    "msg": f"The request exceeds the model's maximum context length: {e}",
+                }
+            ]
+            return JSONResponse({"detail": detail}, 422, headers=headers, background=task)
         except BackendOverloaded as e:
             task, headers = finish(529, None, str(e))
             headers["retry-after"] = str(max(1, round(e.retry_after)))

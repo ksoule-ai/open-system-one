@@ -14,6 +14,7 @@ from typesafe_sdk import (
     TypeSafeUnprocessableEntityError,
 )
 
+from open_system_one.backends import ContextLengthExceeded
 from open_system_one.config import Profile, Registry
 from open_system_one.server import create_app
 from tests.fakes import FakeClient
@@ -57,6 +58,9 @@ def server():
         "oso-fake": FakeClient(),
         "oso-overloaded": FakeClient(overloaded=True),
         "oso-nolabels": FakeClient(top={"The": 0.9, "Answer": 0.1}),
+        "oso-toolong": FakeClient(
+            error=ContextLengthExceeded("This model's maximum context length is 8192 tokens")
+        ),
     }
     registry = Registry(
         profiles={name: profile(name) for name in clients},
@@ -118,7 +122,7 @@ def test_identical_questions_are_deduplicated(server):
 def test_models_list(server):
     url, _ = server
     names = [m.name for m in sdk(url).models.list().models]
-    assert names == ["oso-fake", "oso-overloaded", "oso-nolabels", "oso-latest"]
+    assert names == ["oso-fake", "oso-overloaded", "oso-nolabels", "oso-toolong", "oso-latest"]
 
 
 def test_bad_key_is_401(server):
@@ -170,3 +174,31 @@ def test_no_labels_is_500_not_a_guess(server):
         sdk(url).system_one("s", QUESTIONS, model="oso-nolabels")
     assert e.value.status == 500 and "no answer label" in e.value.body["detail"]
     assert e.value.request_id.startswith("req_")
+
+
+# Capacity rejections use Jev's wording; the Decision Index kit's http engine matches these
+# phrases to record a request as "unsupported" rather than "error".
+@pytest.mark.parametrize(
+    ("question", "marker"),
+    [
+        ({"type": "choice", "criteria": {k: None for k in "wxyz"}}, "options per choice"),
+        ({"type": "choice", "criteria": {"only": None}}, "a choice needs at least two options"),
+        (
+            {"type": "score", "criteria": [str(i) for i in range(11)]},
+            "a score takes 2 to 10 levels",
+        ),
+        ({"type": "score", "criteria": ["one"]}, "a score takes 2 to 10 levels"),
+    ],
+)
+def test_capacity_rejections_use_jev_markers(server, question, marker):
+    url, _ = server
+    with pytest.raises(TypeSafeUnprocessableEntityError) as e:
+        sdk(url).system_one("s", {"q": question}, model="oso-fake")
+    assert marker in e.value.body["detail"][0]["msg"]
+
+
+def test_context_length_is_422_with_marker(server):
+    url, _ = server
+    with pytest.raises(TypeSafeUnprocessableEntityError) as e:
+        sdk(url).system_one("s", QUESTIONS, model="oso-toolong")
+    assert "maximum context length" in e.value.body["detail"][0]["msg"]

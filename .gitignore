@@ -16,3 +16,6 @@ build/
 
 # macOS
 .DS_Store
+
+# Third-party kits and their large working data (Decision Index suite build: ~17 GB)
+external/

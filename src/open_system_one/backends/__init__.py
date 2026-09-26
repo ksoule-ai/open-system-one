@@ -24,6 +24,13 @@ class BackendError(Exception):
     """Any other backend failure (→ 500)."""
 
 
+class ContextLengthExceeded(Exception):
+    """The rendered prompt is longer than the model's context window (→ 422)."""
+
+
+_CONTEXT_MARKERS = ("maximum context length", "context length", "maximum model length")
+
+
 @dataclass
 class CallResult:
     raw: dict[str, Any]  # the backend's full chat-completion response
@@ -115,6 +122,8 @@ class MelleaClient:
                     raise BackendOverloaded(
                         f"backend returned {e.status_code}", _retry_after(e.response)
                     ) from e
+                if e.status_code == 400 and any(m in e.message.lower() for m in _CONTEXT_MARKERS):
+                    raise ContextLengthExceeded(e.message) from e
                 raise BackendError(f"backend returned {e.status_code}: {e.message}") from e
             except openai.APITimeoutError as e:
                 raise BackendOverloaded("backend call timed out") from e

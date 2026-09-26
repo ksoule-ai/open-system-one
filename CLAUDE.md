@@ -366,3 +366,14 @@ Then (MVP):
 - Decision Index run via the kit's `http` engine.
 - Use the endpoint as cheap in-loop validators in Mellea IVR loops.
 - Model routing as a first application.
+- **Deploy the server on HF Inference Endpoints** as a custom container (HF mounts the chosen model
+  at `/repository`; you set the port; a readiness probe hits `/health`; request paths are passed
+  through; images must be `linux/amd64` on Docker Hub / ECR / ACR / GCR). Plan:
+  1. A small CPU endpoint running our server, calling the existing vLLM endpoint via
+     `HF_ENDPOINT_URL` / `HF_TOKEN`. Later maybe one GPU container with vLLM + our server.
+  2. Needs an unauthenticated `/health` route and a `Dockerfile` (bind 0.0.0.0, settings from env,
+     traces off or ephemeral).
+  3. Auth: a protected HF endpoint wants the HF token as `Authorization: Bearer`, which clashes with
+     the SDK's key. Default plan: a public endpoint gated by `OSO_API_KEY`.
+  4. Cold starts (~3.5 min for the vLLM endpoint) exceed the SDK's default 10 s timeout / 30 s retry
+     budget: keep a minimum replica or raise client timeouts.

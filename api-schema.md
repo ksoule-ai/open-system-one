@@ -92,7 +92,7 @@ Status codes match TypeSafe's API reference:
 | Status | When | Body |
 | --- | --- | --- |
 | `401` | Missing or invalid bearer key | `{"detail": "..."}` |
-| `422` | Schema validation failure, unknown `model`, too many options for the profile | FastAPI `HTTPValidationError`: `{"detail": [{"loc", "msg", "type", "input", "ctx"}]}` |
+| `422` | Schema validation failure, unknown `model`, choice options outside 2 – `max_options`, score levels outside 2–10, prompt longer than the model's context. Messages use Jev's wording ("options per choice", "a choice needs at least two options", "a score takes 2 to 10 levels", "maximum context length"), which clients match to classify capacity rejections | FastAPI `HTTPValidationError`: `{"detail": [{"loc", "msg", "type", "input", "ctx"}]}` |
 | `429` | Server-side concurrency limit reached | `{"detail": "..."}`, with `retry-after` |
 | `529` | Backend overloaded or rate-limited upstream | `{"detail": "..."}`, with `retry-after` |
 | `500` | Backend returned no usable logprobs, invariant violated, other internal errors | `{"detail": "..."}` |

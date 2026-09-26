@@ -47,14 +47,18 @@ class FakeClient:
         self,
         top: dict[str, float] | Callable[[list[dict]], dict] = DEFAULT_TOP,
         overloaded: bool = False,
+        error: Exception | None = None,
     ):
         self.top = top
         self.overloaded = overloaded
+        self.error = error
         self.calls: list[list[dict]] = []
 
     async def complete(self, messages, *, prefill):
         self.calls.append(messages)
         if self.overloaded:
             raise BackendOverloaded("fake overload", retry_after=2)
+        if self.error is not None:
+            raise self.error
         top = self.top(messages) if callable(self.top) else self.top
         return CallResult(raw=chat_completion(top), queue_wait=0.0, duration=0.001)
