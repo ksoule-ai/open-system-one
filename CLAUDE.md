@@ -300,6 +300,23 @@ Status: repo set up (layout, `uv sync`); Phase 0 in progress. Ollama steps defer
 
 Inside the Claude Code sandbox, uv can't write `~/.cache/uv`; set `UV_CACHE_DIR=$TMPDIR/uv-cache`.
 
+Phase 0 results so far (2026-09-26; details in `spikes/FINDINGS.md`). Spikes 1–6 are done for
+OpenRouter, the HF endpoint, the SDK, and Jev; Ollama is pending.
+- **OpenRouter returns one logprob position at most**, often the *last* token → `max_tokens: 1` and
+  first-token answer position on OpenRouter profiles.
+- **Pin OpenRouter providers** (`provider.order` + `allow_fallbacks: false`) to ones verified in the
+  matrix; `require_parameters` doesn't stop silent logprob drops (Cloudflare).
+- **Mellea 0.8.0 sends `"tools": null`**, which makes OpenRouter drop providers without tool support;
+  needs a thin workaround before OpenRouter profiles can use SambaNova/Parasail.
+- `top_logprobs` cap is 20 on OpenRouter and on vLLM (default). Temperature 0 gives raw logprobs on
+  every provider tested.
+- Assistant prefill works on vLLM (`continue_final_message`), not reliably on OpenRouter; answer
+  tokens may carry a leading space.
+- The SDK retries 429 and all 5xx (including our 500) twice by default; its default timeout is 10 s.
+- Jev via OpenRouter returns `typesafe/jev-1.13-20260917`, adds `usage.cost`, and sends no
+  `x-typesafe-request-id`; the confidence formula matches Jev within rounding.
+- The schema snapshot must be copied into `schemas/` by hand (the deny rule blocks Claude creating it).
+
 Phase 0 — spikes (findings go in `spikes/FINDINGS.md`, then back into this file):
 1. **Schema snapshot.** Download TypeSafe's `openapi.json` into `schemas/`, dated; generate models; diff
    against the SDK's bundled models.
