@@ -29,6 +29,9 @@ def main(argv: list[str] | None = None) -> None:
     ev.add_argument("--out", default="runs/eval")
     ev.add_argument("--refresh-jev", action="store_true", help="ignore the Jev response cache")
     ev.add_argument(
+        "--prompt", help="prompt version to use instead of the profile's (name@version)"
+    )
+    ev.add_argument(
         "--max-wait", type=float, default=600, help="seconds to wait for a cold backend"
     )
 
@@ -53,6 +56,7 @@ def _eval(args: argparse.Namespace) -> None:
         out_root=args.out,
         refresh_jev=args.refresh_jev,
         max_wait=args.max_wait,
+        prompt_override=args.prompt,
     )
     print(f"\nreport: {run_dir / 'report.md'}")
 

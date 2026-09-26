@@ -81,11 +81,15 @@ def run_eval(
     out_root: str = "runs/eval",
     refresh_jev: bool = False,
     max_wait: float = 600,
+    prompt_override: str | None = None,
 ) -> Path:
     registry = load_registry(models_path)
     profile = registry.resolve(target)
     if profile is None:
         raise SystemExit(f"unknown target {target!r}")
+    if prompt_override:
+        profile = profile.model_copy(update={"prompt": prompt_override})
+        registry.profiles[profile.name] = profile
     prompt = load_prompt(prompts_dir, profile.prompt)
     cases = load_cases(cases_path, split)
     stamp = time.strftime("%Y%m%d-%H%M%S")
