@@ -1,0 +1,15 @@
+# Environment and secrets
+.venv/
+.env
+
+# Traces, eval results, and the Jev response cache (never committed)
+runs/
+
+# Python / tooling
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+*.egg-info/
