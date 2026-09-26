@@ -297,11 +297,12 @@ uv run pytest
 
 ## Setup status / next steps
 Status (2026-09-26): Phase 0 done except Ollama. MVP steps 1–2 and most of 3–4 are built and
-running live on the HF endpoint (`oso-granite-3b`, alias `oso-latest`): FastAPI server, bearer auth,
+running live on the HF endpoint (`oso-granite-3b`, alias `oso-latest`) and on OpenRouter
+(`oso-granite-micro-cf`: Granite 4.0 Micro 3B pinned to Cloudflare, `fanout`): FastAPI server, bearer auth,
 request ids, 401/422/429/529/500 mapping, prompt config `default@1`, the label-token protocol,
 `sequential` / `fanout` / `warm_fanout`, dedup, JSONL traces, `Server-Timing`. 26 offline tests
-(unit, SDK contract, and a recorded Granite fixture) pass. Not built yet: OpenRouter profiles
-(`tools: null` workaround pending), Ollama, `batched`, the eval harness.
+(unit, SDK contract, and a recorded Granite fixture) pass. Not built yet: OpenRouter profiles on
+providers without tool support that get filtered by `tools: null` (workaround pending), Ollama, `batched`, the eval harness.
 
 Inside the Claude Code sandbox, uv can't write `~/.cache/uv`; set `UV_CACHE_DIR=$TMPDIR/uv-cache`.
 

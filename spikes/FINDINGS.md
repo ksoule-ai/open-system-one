@@ -61,6 +61,17 @@ directory and rerun with `uv run --env-file .env python spikes/<script>.py`.
   `retry-after`.
 - Latency: ~0.2–1.1 s per single-token call.
 
+### Granite 4.0 Micro on OpenRouter (added 2026-09-26)
+- `ibm-granite/granite-4.0-h-micro` (Granite 4.0 Micro, 3B) is served only by **Cloudflare**, which
+  advertises `logprobs` / `top_logprobs` but not `tools`. For this model Cloudflare **does** return
+  logprobs (20 top, answer at the first token, label mass ≈ 1), unlike Llama 3.3 70B on Cloudflare.
+- Mellea's `"tools": null` doesn't get Cloudflare filtered out here, so the profile works through
+  the normal Mellea path without the postponed workaround.
+- No `cached_tokens` reported, so `warm_fanout` gains nothing: 8 requests × 3 questions, p50 929 ms
+  (warm_fanout) vs **405 ms (fanout)**. Profile `oso-granite-micro-cf` uses `fanout`.
+- Granite Micro on the payouts example: noul 1.0, choice `technical` (0.9999), score 1.97; the HF
+  Granite Switch 3B gave score 1.0 on the same request.
+
 ### HF Inference Endpoint (vLLM, `ibm-granite/granite-switch-4.1-3b-preview`)
 - `HF_ENDPOINT_URL` already ends in `/v1`; `/v1/models` works with `HF_TOKEN`.
 - Full per-position logprobs (all generated tokens), 20 top logprobs, `>20` → 400

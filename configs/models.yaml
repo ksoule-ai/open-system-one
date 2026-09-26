@@ -19,5 +19,25 @@ profiles:
     max_inflight_requests: 64
     timeout: 30
 
+  oso-granite-micro-cf:
+    backend: openrouter
+    base_url: https://openrouter.ai/api/v1
+    api_key_env: OPENROUTER_API_KEY
+    model_id: ibm-granite/granite-4.0-h-micro   # Granite 4.0 Micro (3B)
+    description: Granite 4.0 Micro 3B via OpenRouter (Cloudflare), prompt default@1
+    release_date: "2026-09-26"
+    prompt: default@1
+    strategy: fanout                      # Cloudflare reports no prefix caching; warming buys nothing
+    top_logprobs: 20
+    max_options: 20
+    max_tokens: 1                         # OpenRouter returns one logprob position at most
+    temperature: 0
+    concurrency: 8
+    max_inflight_requests: 64
+    timeout: 30
+    extra_body:
+      # Cloudflare is the only provider; pin it so a new provider can't silently drop logprobs.
+      provider: {order: [cloudflare], allow_fallbacks: false}
+
 aliases:
   oso-latest: oso-granite-3b
