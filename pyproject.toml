@@ -35,3 +35,10 @@ packages = ["src/open_system_one"]
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+# The Claude Code sandbox denies even stat() on .env files; keep collection away from them.
+addopts = "--ignore=.env --ignore=.env.example"
+markers = ["live: calls a real backend (needs .env); skipped unless OSO_LIVE=1"]

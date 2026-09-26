@@ -1,0 +1,23 @@
+# Model profiles. A request's `model` names a profile or an alias.
+# `${VAR}` is expanded from the environment; keys are referenced by env var name (api_key_env),
+# never written here. Logprob support per backend/provider: see spikes/FINDINGS.md.
+profiles:
+  oso-granite-3b:
+    backend: hf_endpoint
+    base_url: ${HF_ENDPOINT_URL}          # ends in /v1
+    api_key_env: HF_TOKEN
+    model_id: ibm-granite/granite-switch-4.1-3b-preview   # as served by the endpoint's /v1/models
+    description: Granite 4.1 3B (vLLM on a Hugging Face Inference Endpoint), prompt default@1
+    release_date: "2026-09-26"
+    prompt: default@1
+    strategy: warm_fanout
+    top_logprobs: 20                      # vLLM's default max_logprobs
+    max_options: 20
+    max_tokens: 1                         # vLLM returns every position; 1 is enough with first_token
+    temperature: 0                        # vLLM logprobs are raw regardless (Phase 0)
+    concurrency: 8
+    max_inflight_requests: 64
+    timeout: 30
+
+aliases:
+  oso-latest: oso-granite-3b

@@ -32,4 +32,4 @@ uv run --env-file .env open-system-one eval --cases evals/sanity-v0.jsonl \
 
 ## Status
 
-Planning. See `CLAUDE.md` > Setup status / next steps.
+MVP server running on a Hugging Face Inference Endpoint (Granite 3B). See `CLAUDE.md` > Setup status / next steps.

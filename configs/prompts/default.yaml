@@ -1,0 +1,76 @@
+# Default prompt config. Changing anything here means bumping `version` (and the profiles that
+# use it); traces record name, version, and content hash.
+name: default
+version: 1
+description: >
+  System + state as a shared prefix, then one question with labeled options and an explicit
+  "reply with only the label" line (Phase 0: without it, small models start with "The").
+
+system: |
+  You are a precise classifier. You read a state and answer one question about it.
+  Reply with only the label of your answer, and nothing else.
+
+user_layout: [state, question]    # state first: shared prefix across a request's questions
+block_separator: "\n\n"
+structured_format: yaml           # instructions / criteria that are objects or arrays
+
+state:
+  format: yaml                    # object / array states
+  template: |-
+    <state>
+    {{ state }}
+    </state>
+
+questions:
+  # Templates use trim_blocks + lstrip_blocks: a line holding only a {% tag %} disappears.
+  noul:
+    labels: ["Yes", "No"]         # [yes-label, no-label]
+    template: |-
+      Question: {{ instructions or "Is this true?" }}
+      {% if yes or no %}
+
+      {% endif %}
+      {% if yes %}
+      Answer {{ yes_label }} if: {{ yes | indent(2) }}
+      {% endif %}
+      {% if no %}
+      Answer {{ no_label }} if: {{ no | indent(2) }}
+      {% endif %}
+
+      Reply with only {{ yes_label }} or {{ no_label }}.
+
+  choice:
+    labels: [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]
+    collision_labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                       "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"]
+    template: |-
+      Question: {{ instructions or "Which option fits best?" }}
+
+      Options:
+      {% for o in options %}
+      {{ o.label }}. {{ o.key }}{{ (": " ~ (o.description | indent(3))) if o.description else "" }}
+      {% endfor %}
+
+      Reply with only the label of the best option: {{ labels | or_join }}.
+
+  score:
+    labels: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+    template: |-
+      Question: {{ instructions or "Which level fits best?" }}
+
+      Levels, from lowest to highest:
+      {% for o in options %}
+      {{ o.label }}. {{ o.description | indent(3) }}
+      {% endfor %}
+
+      Reply with only the number of the level that fits best: {{ labels | or_join }}.
+
+answer:
+  primer: ""                      # e.g. "Answer:"; primer_mode assistant = prefill (vLLM only)
+  primer_mode: user
+  position: first_token
+
+matching:
+  strip_whitespace: true
+  case_sensitive: false
+  missing_label: zero

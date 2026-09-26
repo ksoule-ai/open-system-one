@@ -109,7 +109,7 @@ defines:
 - **System text.**
 - **State rendering** — header, and how objects and arrays are serialized (pretty JSON, compact JSON, or
   YAML).
-- **Question template** (Jinja, rendered through a Mellea component) — how instructions, options, and
+- **Question template** (Jinja, rendered into Mellea `Message` components) — how instructions, options, and
   criteria appear, per question type.
 - **Label scheme** per question type, token-matching rules, and the missing-label policy.
 - **Answer primer** — text that ends the prompt just before the answer token (e.g. `Answer:`).
@@ -296,7 +296,12 @@ uv run pytest
 - Unit tests and CI run offline against fixtures; only integration tests hit live backends or Jev.
 
 ## Setup status / next steps
-Status: repo set up (layout, `uv sync`); Phase 0 in progress. Ollama steps deferred for now.
+Status (2026-09-26): Phase 0 done except Ollama. MVP steps 1–2 and most of 3–4 are built and
+running live on the HF endpoint (`oso-granite-3b`, alias `oso-latest`): FastAPI server, bearer auth,
+request ids, 401/422/429/529/500 mapping, prompt config `default@1`, the label-token protocol,
+`sequential` / `fanout` / `warm_fanout`, dedup, JSONL traces, `Server-Timing`. 26 offline tests
+(unit, SDK contract, and a recorded Granite fixture) pass. Not built yet: OpenRouter profiles
+(`tools: null` workaround pending), Ollama, `batched`, the eval harness.
 
 Inside the Claude Code sandbox, uv can't write `~/.cache/uv`; set `UV_CACHE_DIR=$TMPDIR/uv-cache`.
 
@@ -307,7 +312,8 @@ OpenRouter, the HF endpoint, the SDK, and Jev; Ollama is pending.
 - **Pin OpenRouter providers** (`provider.order` + `allow_fallbacks: false`) to ones verified in the
   matrix; `require_parameters` doesn't stop silent logprob drops (Cloudflare).
 - **Mellea 0.8.0 sends `"tools": null`**, which makes OpenRouter drop providers without tool support;
-  needs a thin workaround before OpenRouter profiles can use SambaNova/Parasail.
+  needs a thin workaround before OpenRouter profiles can use SambaNova/Parasail. **Postponed**
+  (2026-09-26): the MVP targets the HF endpoint first; revisit when OpenRouter profiles are added.
 - `top_logprobs` cap is 20 on OpenRouter and on vLLM (default). Temperature 0 gives raw logprobs on
   every provider tested.
 - Assistant prefill works on vLLM (`continue_final_message`), not reliably on OpenRouter; answer
@@ -337,8 +343,8 @@ Phase 0 — spikes (findings go in `spikes/FINDINGS.md`, then back into this fil
 
 Then (MVP):
 1. Schema models + FastAPI server with stub answers; SDK contract tests passing.
-2. Prompt config loader + default prompt; protocol on one backend (Ollama) with `sequential`.
-3. OpenRouter and HF endpoint backends; `fanout` and `warm_fanout`.
+2. Prompt config loader + default prompt; protocol on the HF endpoint (Granite 3B) with `sequential`.
+3. `fanout` and `warm_fanout`; OpenRouter backend (after the `tools: null` workaround); Ollama later.
 4. Tracing and latency.
 5. Eval harness with the Jev cache; first tuning pass on `tune` cases; report on `holdout`.
 
