@@ -39,7 +39,9 @@ class CallResult:
 
 
 class ModelClient(Protocol):
-    async def complete(self, messages: list[dict[str, str]], *, prefill: bool) -> CallResult: ...
+    async def complete(
+        self, messages: list[dict[str, str]], *, prefill: bool, top_logprobs: int
+    ) -> CallResult: ...
 
 
 class MelleaClient:
@@ -80,7 +82,7 @@ class MelleaClient:
             max_retries=0,
         )
 
-    def _model_options(self, prefill: bool) -> dict[str, Any]:
+    def _model_options(self, prefill: bool, top_logprobs: int) -> dict[str, Any]:
         from mellea.backends.model_options import ModelOption
 
         p = self.profile
@@ -92,13 +94,15 @@ class MelleaClient:
             ModelOption.MAX_NEW_TOKENS: p.max_tokens,
             ModelOption.TEMPERATURE: p.temperature,
             "logprobs": True,
-            "top_logprobs": p.top_logprobs,
+            "top_logprobs": top_logprobs,
         }
         if extra_body:
             options["extra_body"] = extra_body
         return options
 
-    async def complete(self, messages: list[dict[str, str]], *, prefill: bool) -> CallResult:
+    async def complete(
+        self, messages: list[dict[str, str]], *, prefill: bool, top_logprobs: int
+    ) -> CallResult:
         import openai
         from mellea.stdlib.components.chat import Message
         from mellea.stdlib.context.chat import ChatContext
@@ -114,7 +118,7 @@ class MelleaClient:
             t1 = time.perf_counter()
             try:
                 mot, _ = await backend.generate_from_context(
-                    action, ctx, model_options=self._model_options(prefill)
+                    action, ctx, model_options=self._model_options(prefill, top_logprobs)
                 )
                 await mot.avalue()
             except openai.APIStatusError as e:

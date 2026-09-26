@@ -31,10 +31,18 @@ class QuestionTypeConfig(BaseModel):
     # Used instead of `labels` when an option key looks like a label (e.g. keys A-E with letter
     # labels). Only choice questions have keys, so only they use it.
     collision_labels: list[str] | None = None
+    # Used when a choice has more options than `labels` (or `collision_labels`) can cover, e.g.
+    # numbers 1..256 beyond letters A..T. Every label must be a single token for the model.
+    extended_labels: list[str] | None = None
+
+    def max_labels(self) -> int:
+        return max(
+            len(s) for s in (self.labels, self.collision_labels or [], self.extended_labels or [])
+        )
 
     @model_validator(mode="after")
     def _unique(self) -> "QuestionTypeConfig":
-        for scheme in (self.labels, self.collision_labels or []):
+        for scheme in (self.labels, self.collision_labels or [], self.extended_labels or []):
             if len(set(scheme)) != len(scheme):
                 raise ValueError(f"labels must be unique: {scheme}")
         return self
@@ -103,9 +111,11 @@ class PromptConfig(BaseModel):
 
 
 def load_prompt(prompts_dir: str | Path, ref: str) -> PromptConfig:
-    """Load `<prompts_dir>/<name>.yaml` and check it is the version `ref` asks for."""
+    """Load `<prompts_dir>/<name>@<version>.yaml` (or `<name>.yaml`) and check its version."""
     name, version = ref.split("@", 1)
-    path = Path(prompts_dir) / f"{name}.yaml"
+    path = Path(prompts_dir) / f"{ref}.yaml"
+    if not path.exists():
+        path = Path(prompts_dir) / f"{name}.yaml"
     raw = path.read_bytes()
     config = PromptConfig(**yaml.safe_load(raw))
     if config.name != name or str(config.version) != version:

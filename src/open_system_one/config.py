@@ -26,7 +26,8 @@ class Profile(BaseModel):
     release_date: str  # YYYY-MM-DD, shown by GET /v1/models
     prompt: str  # "<name>@<version>", a file in configs/prompts/
     strategy: Strategy = "warm_fanout"
-    top_logprobs: int = Field(20, ge=1)
+    top_logprobs: int = Field(20, ge=1)  # the most the backend allows per call
+    base_top_logprobs: int = Field(20, ge=1)  # what calls with few options request
     max_options: int = Field(20, ge=1)
     max_tokens: int = Field(1, ge=1)
     temperature: float = 0.0
@@ -42,6 +43,8 @@ class Profile(BaseModel):
                 f"profile {self.name}: max_options ({self.max_options}) must be <= "
                 f"top_logprobs ({self.top_logprobs})"
             )
+        if self.base_top_logprobs > self.top_logprobs:
+            raise ValueError(f"profile {self.name}: base_top_logprobs must be <= top_logprobs")
         if "@" not in self.prompt:
             raise ValueError(f"profile {self.name}: prompt must be '<name>@<version>'")
         return self

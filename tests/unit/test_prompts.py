@@ -18,8 +18,8 @@ def questions(qs, state="Help! My payouts have been failing for 3 days."):
 
 def test_prompt_version_must_match(cfg):
     assert cfg.ref == "default@1" and len(cfg.content_hash) == 12
-    with pytest.raises(ValueError, match="new version"):
-        load_prompt("configs/prompts", "default@2")
+    with pytest.raises(FileNotFoundError):
+        load_prompt("configs/prompts", "nonexistent@1")
 
 
 def test_question_keys_never_reach_the_prompt(cfg):
@@ -89,3 +89,37 @@ def test_models_yaml_loads(monkeypatch):
     assert reg.resolve("oso-latest").name == "oso-granite-3b"
     assert reg.profiles["oso-granite-3b"].base_url == "https://example.test/v1"
     assert reg.resolve("nope") is None
+
+
+def test_extended_labels_cover_large_choices():
+    v1 = load_prompt("configs/prompts", "default@1")
+    v2 = load_prompt("configs/prompts", "default@2")
+    small = questions({"q": {"type": "choice", "criteria": {"billing": None, "sales": None}}})["q"]
+    # Up to 20 options, v2 renders exactly like v1 (letters).
+    assert render_question("s", small, v2).messages == render_question("s", small, v1).messages
+    big = questions(
+        {"q": {"type": "choice", "criteria": {f"option_{i}": f"intent {i}" for i in range(151)}}}
+    )["q"]
+    rendered = render_question("s", big, v2)
+    assert rendered.labels == [str(i) for i in range(1, 152)]
+    assert "151. option_150: intent 150" in rendered.messages[-1]["content"]
+    with pytest.raises(ValueError, match="at most 20 labels"):
+        render_question("s", big, v1)
+
+
+def test_request_top_logprobs():
+    from open_system_one.config import Profile
+    from open_system_one.engine import request_top_logprobs
+
+    p = Profile(
+        name="p",
+        backend="hf_endpoint",
+        model_id="m",
+        release_date="2026-09-26",
+        prompt="default@2",
+        top_logprobs=256,
+        max_options=200,
+    )
+    assert request_top_logprobs(p, 3) == 20
+    assert request_top_logprobs(p, 77) == 154
+    assert request_top_logprobs(p, 151) == 256

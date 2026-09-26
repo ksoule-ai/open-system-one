@@ -66,7 +66,8 @@ def check_limits(request: SystemOneRequest, profile: Profile, prompt: PromptConf
     for key, wrapped in request.questions.items():
         q = wrapped.root
         if isinstance(q, ChoiceQuestion):
-            n, limit = len(q.criteria), profile.max_options
+            n = len(q.criteria)
+            limit = min(profile.max_options, prompt.questions.choice.max_labels())
             if n < 2:
                 errors.append(
                     _limit_error(
@@ -105,6 +106,15 @@ def check_limits(request: SystemOneRequest, profile: Profile, prompt: PromptConf
                 )
     if errors:
         raise LimitError(errors)
+
+
+def request_top_logprobs(profile: Profile, n_labels: int) -> int:
+    """How many top logprobs to request for a call with `n_labels` answer labels.
+
+    Small questions ask for the profile's base amount; large ones ask for twice their label count
+    (so labels still show up when other tokens outrank some of them), capped at the backend's max.
+    """
+    return min(profile.top_logprobs, max(profile.base_top_logprobs, 2 * n_labels))
 
 
 def _dedupe(request: SystemOneRequest) -> list[_Unique]:
@@ -178,7 +188,11 @@ async def answer_request(
             "started_ms": round((time.perf_counter() - t_calls) * 1000, 1),
         }
         calls.append(entry)
-        result = await client.complete(u.rendered.messages, prefill=u.rendered.prefill)
+        top_k = request_top_logprobs(profile, len(u.rendered.labels))
+        entry["top_logprobs"] = top_k
+        result = await client.complete(
+            u.rendered.messages, prefill=u.rendered.prefill, top_logprobs=top_k
+        )
         entry.update(
             queue_wait_ms=round(result.queue_wait * 1000, 1),
             duration_ms=round(result.duration * 1000, 1),

@@ -77,16 +77,22 @@ def _norm(token: str, config: PromptConfig) -> str:
 
 
 def choice_labels(keys: list[str], config: PromptConfig) -> list[str]:
-    """Labels for a choice question's options, switching schemes when a key looks like a label."""
+    """Labels for a choice question's options.
+
+    Schemes are tried in order: `labels`, `collision_labels`, `extended_labels`. The first one with
+    enough labels and no option key that looks like one of its labels wins; if every big-enough
+    scheme collides, the first big-enough one is used anyway.
+    """
     qc = config.questions.choice
-    labels = qc.labels
-    if qc.collision_labels:
-        label_forms = {_norm(label, config) for label in labels}
-        if any(_norm(key, config) in label_forms for key in keys):
-            labels = qc.collision_labels
-    if len(keys) > len(labels):
-        raise ValueError(f"{len(keys)} options but only {len(labels)} labels")
-    return labels[: len(keys)]
+    key_forms = {_norm(key, config) for key in keys}
+    schemes = [s for s in (qc.labels, qc.collision_labels, qc.extended_labels) if s]
+    big_enough = [s for s in schemes if len(s) >= len(keys)]
+    if not big_enough:
+        raise ValueError(f"{len(keys)} options but at most {qc.max_labels()} labels")
+    for scheme in big_enough:
+        if not key_forms & {_norm(label, config) for label in scheme[: len(keys)]}:
+            return scheme[: len(keys)]
+    return big_enough[0][: len(keys)]
 
 
 def render_state(state: Any, config: PromptConfig) -> str:
