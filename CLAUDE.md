@@ -296,12 +296,9 @@ uv run pytest
 - Unit tests and CI run offline against fixtures; only integration tests hit live backends or Jev.
 
 ## Setup status / next steps
-Status: planning. No repo yet.
+Status: repo set up (layout, `uv sync`); Phase 0 in progress. Ollama steps deferred for now.
 
-1. **Repo setup** from `starter_files/` (do **not** run `uv init`). Move `CLAUDE.md`, `api-schema.md`,
-   `eval-design.md`, `README.md`, `pyproject.toml`, `.env.example`, `.gitignore` → repo root;
-   `settings.json` → `.claude/settings.json`; `mellea.md`, `api-compat.md`, `prompts.md` →
-   `.claude/rules/`; `sanity-v0.jsonl` → `evals/`. Then `uv sync`, remove `starter_files/`, commit.
+Inside the Claude Code sandbox, uv can't write `~/.cache/uv`; set `UV_CACHE_DIR=$TMPDIR/uv-cache`.
 
 Phase 0 — spikes (findings go in `spikes/FINDINGS.md`, then back into this file):
 1. **Schema snapshot.** Download TypeSafe's `openapi.json` into `schemas/`, dated; generate models; diff
