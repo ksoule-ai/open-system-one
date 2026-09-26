@@ -114,8 +114,8 @@ directory and rerun with `uv run --env-file .env python spikes/<script>.py`.
 
 ## Environment notes
 - In the Claude Code sandbox: set `UV_CACHE_DIR=$TMPDIR/uv-cache`; `.env` and `.env.*` (including
-  `.env.example`) are read-denied, so anything using keys runs outside the sandbox; binding local
-  ports is blocked, so the stub/contract tests run outside it too (or set
-  `sandbox.network.allowLocalBinding: true`).
+  `.env.example`) are read-denied, so anything using keys runs outside the sandbox. Local port
+  binding is allowed (`sandbox.network.allowLocalBinding: true`), so the server and contract tests
+  run inside it.
 - `.env` has `MODEL_ID` and `HF_TOKEN_INFERENCE`, which aren't in `.env.example`; `OSO_API_KEY` isn't
   set yet.

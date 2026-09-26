@@ -37,6 +37,7 @@
   "sandbox": {
     "enabled": true,
     "network": {
+      "allowLocalBinding": true,
       "allowedDomains": [
         "pypi.org",
         "files.pythonhosted.org",
