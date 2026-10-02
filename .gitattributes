@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Dev-set data is stored byte-for-byte as written (no line-ending normalization).
+evals/decision-index-dev/** -text

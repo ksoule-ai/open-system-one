@@ -1,0 +1,9 @@
+# Benchmarks whose terms forbid redistribution or ask that items not be posted publicly:
+# rebuilt locally with scripts/decision_index_dev.py, never committed.
+raw/25-GPQA/
+raw/59-RAGTruth/
+converted/25-GPQA.jsonl.gz
+converted/59-RAGTruth.jsonl.gz
+# All converted requests in one file (includes the restricted ones).
+dev-rows.jsonl.gz
+converted.old/

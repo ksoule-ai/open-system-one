@@ -1,0 +1,450 @@
+{
+  "benchmarks": {
+    "1": {
+      "benchmark": "BFCL",
+      "catalog_id": 1,
+      "converted_requests": 100,
+      "labels": {},
+      "restricted": null,
+      "samples": 100,
+      "slug": "01-BFCL",
+      "source_kinds": {
+        "heldout-category": 100
+      }
+    },
+    "10": {
+      "benchmark": "SGD/SGD-X",
+      "catalog_id": 10,
+      "converted_requests": 100,
+      "labels": {},
+      "restricted": null,
+      "samples": 100,
+      "slug": "10-SGD-SGD-X",
+      "source_kinds": {
+        "heldout-split": 100
+      }
+    },
+    "11": {
+      "benchmark": "ContractNLI",
+      "catalog_id": 11,
+      "converted_requests": 100,
+      "labels": {},
+      "restricted": null,
+      "samples": 100,
+      "slug": "11-ContractNLI",
+      "source_kinds": {
+        "heldout-split": 100
+      }
+    },
+    "12": {
+      "benchmark": "ANLI",
+      "catalog_id": 12,
+      "converted_requests": 100,
+      "labels": {},
+      "restricted": null,
+      "samples": 100,
+      "slug": "12-ANLI",
+      "source_kinds": {
+        "heldout-split": 100
+      }
+    },
+    "2": {
+      "benchmark": "ToolRet",
+      "catalog_id": 2,
+      "converted_requests": 100,
+      "labels": {},
+      "restricted": null,
+      "samples": 100,
+      "slug": "02-ToolRet",
+      "source_kinds": {
+        "suite-unselected": 100
+      }
+    },
+    "20": {
+      "benchmark": "BPoMP",
+      "catalog_id": 20,
+      "converted_requests": 100,
+      "labels": {
+        "option_0": 50,
+        "option_1": 50
+      },
+      "restricted": null,
+      "samples": 100,
+      "slug": "20-BPoMP",
+      "source_kinds": {
+        "suite-unselected": 100
+      }
+    },
+    "21": {
+      "benchmark": "Humicroedit",
+      "catalog_id": 21,
+      "converted_requests": 100,
+      "labels": {
+        "1": 50,
+        "2": 50
+      },
+      "restricted": null,
+      "samples": 100,
+      "slug": "21-Humicroedit",
+      "source_kinds": {
+        "heldout-split": 100
+      }
+    },
+    "22": {
+      "benchmark": "POP909-CL",
+      "catalog_id": 22,
+      "converted_requests": 100,
+      "labels": {},
+      "restricted": null,
+      "samples": 100,
+      "slug": "22-POP909-CL",
+      "source_kinds": {
+        "suite-unselected": 100
+      }
+    },
+    "23": {
+      "benchmark": "cfcolor",
+      "catalog_id": 23,
+      "converted_requests": 100,
+      "labels": {
+        "A": 50,
+        "B": 50
+      },
+      "restricted": null,
+      "samples": 100,
+      "slug": "23-cfcolor",
+      "source_kinds": {
+        "suite-unselected": 100
+      }
+    },
+    "24": {
+      "benchmark": "MMLU",
+      "catalog_id": 24,
+      "converted_requests": 100,
+      "labels": {},
+      "restricted": null,
+      "samples": 100,
+      "slug": "24-MMLU",
+      "source_kinds": {
+        "heldout-split": 100
+      }
+    },
+    "25": {
+      "benchmark": "GPQA Diamond",
+      "catalog_id": 25,
+      "converted_requests": 100,
+      "labels": {},
+      "restricted": "GPQA authors ask that the questions not be posted in plain text",
+      "samples": 100,
+      "slug": "25-GPQA",
+      "source_kinds": {
+        "heldout-split": 100
+      }
+    },
+    "26": {
+      "benchmark": "ARC-Easy",
+      "catalog_id": 26,
+      "converted_requests": 100,
+      "labels": {},
+      "restricted": null,
+      "samples": 100,
+      "slug": "26-ARC-Easy",
+      "source_kinds": {
+        "heldout-split": 100
+      }
+    },
+    "27": {
+      "benchmark": "ARC-Challenge",
+      "catalog_id": 27,
+      "converted_requests": 100,
+      "labels": {},
+      "restricted": null,
+      "samples": 100,
+      "slug": "27-ARC-Challenge",
+      "source_kinds": {
+        "heldout-split": 100
+      }
+    },
+    "28": {
+      "benchmark": "WinoGrande",
+      "catalog_id": 28,
+      "converted_requests": 100,
+      "labels": {
+        "1": 50,
+        "2": 50
+      },
+      "restricted": null,
+      "samples": 100,
+      "slug": "28-WinoGrande",
+      "source_kinds": {
+        "heldout-split": 100
+      }
+    },
+    "29": {
+      "benchmark": "HellaSwag",
+      "catalog_id": 29,
+      "converted_requests": 100,
+      "labels": {},
+      "restricted": null,
+      "samples": 100,
+      "slug": "29-HellaSwag",
+      "source_kinds": {
+        "heldout-split": 100
+      }
+    },
+    "30": {
+      "benchmark": "GSM8K",
+      "catalog_id": 30,
+      "converted_requests": 200,
+      "labels": {},
+      "restricted": null,
+      "samples": 100,
+      "slug": "30-GSM8K",
+      "source_kinds": {
+        "heldout-split": 100
+      }
+    },
+    "31": {
+      "benchmark": "ChessBench",
+      "catalog_id": 31,
+      "converted_requests": 100,
+      "labels": {},
+      "restricted": null,
+      "samples": 100,
+      "slug": "31-ChessBench",
+      "source_kinds": {
+        "suite-unselected": 100
+      }
+    },
+    "36": {
+      "benchmark": "BRIGHT",
+      "catalog_id": 36,
+      "converted_requests": 100,
+      "labels": {},
+      "restricted": null,
+      "samples": 100,
+      "slug": "36-BRIGHT",
+      "source_kinds": {
+        "suite-unselected": 100
+      }
+    },
+    "37": {
+      "benchmark": "Amazon ESCI",
+      "catalog_id": 37,
+      "converted_requests": 100,
+      "labels": {},
+      "restricted": null,
+      "samples": 100,
+      "slug": "37-Amazon",
+      "source_kinds": {
+        "heldout-split": 100
+      }
+    },
+    "38": {
+      "benchmark": "ACOS",
+      "catalog_id": 38,
+      "converted_requests": 390,
+      "labels": {},
+      "restricted": null,
+      "samples": 100,
+      "slug": "38-ACOS",
+      "source_kinds": {
+        "heldout-split": 100
+      }
+    },
+    "4": {
+      "benchmark": "BANKING77",
+      "catalog_id": 4,
+      "converted_requests": 100,
+      "labels": {},
+      "restricted": null,
+      "samples": 100,
+      "slug": "04-BANKING77",
+      "source_kinds": {
+        "heldout-split": 100
+      }
+    },
+    "40": {
+      "benchmark": "iSarcasmEval",
+      "catalog_id": 40,
+      "converted_requests": 100,
+      "labels": {
+        "0": 33,
+        "1": 33
+      },
+      "restricted": null,
+      "samples": 100,
+      "slug": "40-iSarcasmEval",
+      "source_kinds": {
+        "heldout-split": 100
+      }
+    },
+    "41": {
+      "benchmark": "VAST",
+      "catalog_id": 41,
+      "converted_requests": 100,
+      "labels": {},
+      "restricted": null,
+      "samples": 100,
+      "slug": "41-VAST",
+      "source_kinds": {
+        "heldout-split": 100
+      }
+    },
+    "42": {
+      "benchmark": "NLI4CT",
+      "catalog_id": 42,
+      "converted_requests": 100,
+      "labels": {
+        "Contradiction": 50,
+        "Entailment": 50
+      },
+      "restricted": null,
+      "samples": 100,
+      "slug": "42-NLI4CT",
+      "source_kinds": {
+        "heldout-split": 100
+      }
+    },
+    "44": {
+      "benchmark": "CLadder",
+      "catalog_id": 44,
+      "converted_requests": 100,
+      "labels": {
+        "A": 50,
+        "B": 50
+      },
+      "restricted": null,
+      "samples": 100,
+      "slug": "44-CLadder",
+      "source_kinds": {
+        "suite-unselected": 100
+      }
+    },
+    "48": {
+      "benchmark": "ForecastBench",
+      "catalog_id": 48,
+      "converted_requests": 100,
+      "labels": {
+        "no": 50,
+        "yes": 50
+      },
+      "restricted": null,
+      "samples": 100,
+      "slug": "48-ForecastBench",
+      "source_kinds": {
+        "heldout-window": 100
+      }
+    },
+    "5": {
+      "benchmark": "CLINC150+OOS",
+      "catalog_id": 5,
+      "converted_requests": 100,
+      "labels": {},
+      "restricted": null,
+      "samples": 100,
+      "slug": "05-CLINC150plusOOS",
+      "source_kinds": {
+        "heldout-split": 100
+      }
+    },
+    "56": {
+      "benchmark": "PhishNChips phishing decisions",
+      "catalog_id": 56,
+      "converted_requests": 100,
+      "labels": {
+        "legitimate": 50,
+        "phishing": 50
+      },
+      "restricted": null,
+      "samples": 100,
+      "slug": "56-PhishNChips",
+      "source_kinds": {
+        "handwritten": 50,
+        "heldout-split": 50
+      }
+    },
+    "57": {
+      "benchmark": "MMLU-Pro",
+      "catalog_id": 57,
+      "converted_requests": 70,
+      "labels": {},
+      "restricted": null,
+      "samples": 70,
+      "slug": "57-MMLU-Pro",
+      "source_kinds": {
+        "heldout-split": 70
+      }
+    },
+    "59": {
+      "benchmark": "RAGTruth response-level hallucination",
+      "catalog_id": 59,
+      "converted_requests": 100,
+      "labels": {
+        "False": 50,
+        "True": 50
+      },
+      "restricted": "RAGTruth contexts include Yelp Open Dataset text (no redistribution) and MS MARCO (non-commercial)",
+      "samples": 100,
+      "slug": "59-RAGTruth",
+      "source_kinds": {
+        "heldout-split": 100
+      }
+    },
+    "6": {
+      "benchmark": "RouterBench",
+      "catalog_id": 6,
+      "converted_requests": 200,
+      "labels": {},
+      "restricted": null,
+      "samples": 100,
+      "slug": "06-RouterBench",
+      "source_kinds": {
+        "suite-unselected": 100
+      }
+    },
+    "61": {
+      "benchmark": "HoVer claim verification",
+      "catalog_id": 61,
+      "converted_requests": 100,
+      "labels": {
+        "NOT_SUPPORTED": 50,
+        "SUPPORTED": 50
+      },
+      "restricted": null,
+      "samples": 100,
+      "slug": "61-HoVer",
+      "source_kinds": {
+        "heldout-split": 100
+      }
+    },
+    "64": {
+      "benchmark": "New Yorker caption matching",
+      "catalog_id": 64,
+      "converted_requests": 100,
+      "labels": {},
+      "restricted": null,
+      "samples": 100,
+      "slug": "64-New",
+      "source_kinds": {
+        "heldout-split": 100
+      }
+    },
+    "9": {
+      "benchmark": "Home appliance simulator",
+      "catalog_id": 9,
+      "converted_requests": 80,
+      "labels": {},
+      "restricted": null,
+      "samples": 80,
+      "slug": "09-Home",
+      "source_kinds": {
+        "generator-dev": 80
+      }
+    }
+  },
+  "kit": "/Users/ksoule/Documents/dev/open-system-one/decision-index",
+  "samples_per_benchmark": 100,
+  "seed": 20261002,
+  "suite": "Decision Index 0.2 (kit commit 19ad28e)"
+}

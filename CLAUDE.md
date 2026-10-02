@@ -311,6 +311,12 @@ Decision Index (2026-09-26): full 0.2 suite through the kit's `http` engine agai
 `results/decision-index/`. House rules apply from here: `default@3` is the Decision Index prompt, and the
 suite is never used to tune prompts.
 
+Decision Index dev set (2026-10-02): `evals/decision-index-dev/` — 34 benchmarks, 3,350 samples from
+data the 0.2 suite does not score (held-out splits, unused BFCL categories, ForecastBench outside the
+window, suite-unselected rows, generator dev rows, 50 hand-written PhishNChips emails), raw records +
+kit-adapter conversions, provenance per sample. Built by `scripts/decision_index_dev.py`; see its README.
+Tune on this, never on the suite.
+
 Phase 0 results so far (2026-09-26; details in `spikes/FINDINGS.md`). Spikes 1–6 are done for
 OpenRouter, the HF endpoint, the SDK, and Jev; Ollama is pending.
 - **OpenRouter returns one logprob position at most**, often the *last* token → `max_tokens: 1` and

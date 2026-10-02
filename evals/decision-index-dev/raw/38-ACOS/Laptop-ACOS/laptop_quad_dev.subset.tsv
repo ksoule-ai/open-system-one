@@ -1,0 +1,58 @@
+this version has been my least favorite version i ' ve had for the following reasons listed bellow the pros .	7,8 LAPTOP#GENERAL 0 5,7
+after about 5 / 10 minutes of use the screen goes crazy and you have to force to power down and wait to restart .	9,10 DISPLAY#OPERATION_PERFORMANCE 0 11,12
+some apps don ' t work but the play store is still in beta right now	1,2 SOFTWARE#GENERAL 0 -1,-1	8,10 SOFTWARE#GENERAL 1 -1,-1
+what really did it was when i tried contacting acer support i was simply told ` ` try a restart ` ` and then ` ` call google , we can ' t help you ` ` .	10,11 SUPPORT#GENERAL 0 -1,-1
+sounds like a good deal for a $ 620 laptop but battery doesn ' t perform as promised i am hardly getting 4 hrs .	9,10 LAPTOP#PRICE 2 3,4	11,12 BATTERY#OPERATION_PERFORMANCE 0 -1,-1
+returned because had it less than a month and it decided to go crazy and start typing by its self ect .	-1,-1 LAPTOP#OPERATION_PERFORMANCE 0 13,14
+i ' ve been happy being able to plug in and run overwatch from time to time on this laptop , with higher settings .	19,20 LAPTOP#DESIGN_FEATURES 2 4,5
+dedicated graphics card	1,3 GRAPHICS#GENERAL 2 0,1
+overall , this budget laptop ticks all the boxes and there is nothing on the market that is new with so many features crammed in at this price .	3,5 LAPTOP#GENERAL 2 -1,-1
+the bluetooth connects easily to everything .	1,2 MULTIMEDIA_DEVICES#CONNECTIVITY 2 -1,-1
+i just got it today and i love it !	-1,-1 LAPTOP#GENERAL 2 7,8
+if you are in the google echo system , then this is great .	5,8 SOFTWARE#GENERAL 2 12,13
+works great .	-1,-1 LAPTOP#OPERATION_PERFORMANCE 2 1,2
+light thin best price power laptop	5,6 LAPTOP#DESIGN_FEATURES 2 0,1	5,6 LAPTOP#DESIGN_FEATURES 2 1,2	5,6 LAPTOP#PRICE 2 2,3
+nice keyboard .	1,2 KEYBOARD#GENERAL 2 0,1
+it has a full size keyboard , a number pad , a camera , and great big screen !	5,6 KEYBOARD#DESIGN_FEATURES 2 -1,-1	8,10 KEYBOARD#DESIGN_FEATURES 2 -1,-1	12,13 KEYBOARD#DESIGN_FEATURES 1 -1,-1	17,18 DISPLAY#DESIGN_FEATURES 2 15,16	17,18 DISPLAY#DESIGN_FEATURES 2 16,17
+navigates well .	0,1 Out_Of_Scope#GENERAL 2 1,2
+i only mention this because , in my opinion , you ' re getting about $ 300 worth of performance here ; anyone telling you this device runs like a $ 500 or $ 800 computer is exaggerating .	26,27 LAPTOP#PRICE 0 37,38
+but , honesty , for the intended use case of a budget chromebook ( youtube , bill paying , amazon prime watching machine ) this difference is negligible .	12,13 LAPTOP#QUALITY 1 27,28
+i was extremely hesitant to buy a used macbook pro ( it ' s still a lot of money ) but so far am surprisingly pleased with it .	8,10 LAPTOP#GENERAL 1 3,4	8,10 LAPTOP#GENERAL 2 25,26
+i had the chance to test the new radeon graphics card and it ' s really good .	8,11 GRAPHICS#GENERAL 2 16,17
+these macbook pro computers are expensive .	1,4 LAPTOP#PRICE 0 5,6
+battery issues aside , i really love this laptop and it is easily the nicest piece of electronics i have ever owned .	0,1 BATTERY#GENERAL 0 -1,-1	8,9 LAPTOP#GENERAL 2 6,7
+less of a fault of the much lauded diving board and more a factor of the very well designed new hardware .	20,21 HARDWARE#DESIGN_FEATURES 2 17,18
+a great computer !	2,3 LAPTOP#GENERAL 2 1,2
+such a nice mac	3,4 LAPTOP#GENERAL 2 2,3
+price was very good and met my expectations also shipping was very quick .	-1,-1 LAPTOP#PRICE 2 3,4	9,10 SHIPPING#GENERAL 2 12,13
+i ' ve been extremely impressed by this device .	8,9 LAPTOP#GENERAL 2 5,6
+it feels responsive to me , and i went to settings to customize the speed , clicking , and scrolling .	-1,-1 HARDWARE#OPERATION_PERFORMANCE 2 2,3
+did i mention , i can access all my word , excel , and powerpoint files using the google apps .	18,20 SOFTWARE#USABILITY 2 -1,-1
+i have had it about 4 days and have been checking out how well it runs my favorite android apps .	-1,-1 LAPTOP#OPERATION_PERFORMANCE 2 13,14	18,20 SOFTWARE#OPERATION_PERFORMANCE 2 17,18
+apple has always priced their hardware high , but you could always make an argument for the style , nice hardware and the unique osx experience .	20,21 COMPANY#PRICE 0 6,7	-1,-1 LAPTOP#DESIGN_FEATURES 2 -1,-1	-1,-1 HARDWARE#GENERAL 2 19,20	24,25 OS#GENERAL 2 23,24
+the intel iris sucks .	1,3 HARD_DISC#OPERATION_PERFORMANCE 0 3,4
+now i ' m just down to some gripes that are probably here to stay : the bluetooth on this thing is really fussy , the non - functional video output ( using usb - c video out through an hdmi cable sends just a blank desktop background and no audio , even if i am playing a movie or youtube visibly on the c302 screen ) , and that it can ' t hold a vpn connection without dropping it every 20 - 30 minutes .	17,18 HARDWARE#OPERATION_PERFORMANCE 0 23,24	-1,-1 LAPTOP#CONNECTIVITY 0 -1,-1
+this seems to be a somewhat common issue with chromebooks but this asus model doesn ' t have a way to preform an external reset , which is a big problem if you ' ve setup any personal info on it and it has to be sent back .	12,14 LAPTOP#GENERAL 0 -1,-1
+the funny part is that the customer service people have been great but they have no control to take care of problems .	6,8 SUPPORT#GENERAL 2 11,12
+i feel like i bought a decent machine but it ' s unable to handle the ram workload .	7,8 LAPTOP#GENERAL 2 6,7	7,8 LAPTOP#OPERATION_PERFORMANCE 0 -1,-1
+monitor screen is ok , sometimes the contrast is poor but looks better in games .	0,2 DISPLAY#OPERATION_PERFORMANCE 1 3,4	7,8 DISPLAY#OPERATION_PERFORMANCE 0 9,10	7,8 DISPLAY#OPERATION_PERFORMANCE 2 12,13
+don ' t waste your money on this computer , it will disapoint you in every way possible .	8,9 LAPTOP#GENERAL 0 12,13
+the laptop was dead on arrival .	1,2 LAPTOP#GENERAL 0 3,4
+it is not a very stable build at all .	-1,-1 LAPTOP#DESIGN_FEATURES 0 2,6
+i just opened it earlier today and my initial impressions is that it is very attractive and very sturdy feeling and i love the screen which non reflective , it ' s very nice not looking into a reflective glossy screen for a change .	-1,-1 LAPTOP#GENERAL 2 15,16	-1,-1 LAPTOP#GENERAL 2 18,19
+the screen looks amazing , ips it seems .	1,2 DISPLAY#DESIGN_FEATURES 2 3,4
+it ' s light weight , sleek , the screen resolution is great and it runs very well for everyday use .	-1,-1 LAPTOP#DESIGN_FEATURES 2 3,4	-1,-1 LAPTOP#DESIGN_FEATURES 2 6,7	9,11 DISPLAY#GENERAL 2 12,13	-1,-1 LAPTOP#OPERATION_PERFORMANCE 2 17,18
+i have no issues with using the internal hard drive , it works fast enough for me when loading up my software and music .	7,10 HARD_DISC#OPERATION_PERFORMANCE 2 13,14
+adequate screen .	1,2 DISPLAY#GENERAL 2 0,1
+it ` ` feels ` ` solid .	-1,-1 LAPTOP#QUALITY 2 6,7
+keyboard is not good .	0,1 KEYBOARD#GENERAL 0 2,4
+it ' s sturdy , and looks and feels great .	-1,-1 LAPTOP#DESIGN_FEATURES 2 3,4	-1,-1 LAPTOP#DESIGN_FEATURES 2 9,10
+love this chromebook !	2,3 LAPTOP#GENERAL 2 0,1
+at least the volume through bluetooth was tolerable .	3,6 MULTIMEDIA_DEVICES#OPERATION_PERFORMANCE 1 7,8
+in general , it has the look and feel of a premium laptop that is at home in any situation such as sitting down with a client .	12,13 LAPTOP#DESIGN_FEATURES 2 11,12
+battery life is also solid .	0,2 BATTERY#OPERATION_PERFORMANCE 2 4,5
+construction looks and feels great .	0,1 LAPTOP#DESIGN_FEATURES 2 4,5
+i am a mac person in every other way , but i love this chromebook !	14,15 LAPTOP#GENERAL 2 12,13
+i love the keyboard , trackpad and screen .	3,4 KEYBOARD#GENERAL 2 1,2	5,6 KEYBOARD#GENERAL 2 1,2	7,8 DISPLAY#GENERAL 2 1,2
+for ~ $ 400 , i ' m happy with this product after a couple months .	11,12 LAPTOP#GENERAL 2 8,9
+it works perfectly and feels very tight but it is something i noticed .	-1,-1 LAPTOP#OPERATION_PERFORMANCE 2 2,3	-1,-1 LAPTOP#OPERATION_PERFORMANCE 2 6,7

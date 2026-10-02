@@ -1,0 +1,101 @@
+text,category
+I topped up and now my money is not there anymore! What happened to it?,top_up_reverted
+What do I do now that I can't use this card?,card_not_working
+"I was overcharged at an ATM while on vacation. I needed cash so I had to use it, but your charges are outregous and I wish I would have known beforehand.",wrong_exchange_rate_for_cash_withdrawal
+"For SEPA transfers, what kind of charge will be applied?",top_up_by_bank_transfer_charge
+"I would like a disposable virtual card, could I get one?",get_disposable_virtual_card
+Why hasn't my payment gone through?,pending_card_payment
+Where is my top-up verification code?,verify_top_up
+How will I know what the exchange rate is?,exchange_rate
+Why hasn't my payment gone through yet?,pending_card_payment
+What age do you have to be?,age_limit
+I was just needing to know why my card got declined,declined_card_payment
+How will I receive my PIN?,get_physical_card
+"My identity isn't being accepted, what should I do?",unable_to_verify_identity
+How much would I be charged for a transfer?,top_up_by_bank_transfer_charge
+"My card payment reverted back, I think.",reverted_card_payment?
+Tried using my ATM card earlier at one of your locations for the first time.  It didn't work.  What is going on?,declined_cash_withdrawal
+why didnt a transfer to my account process,beneficiary_not_allowed
+I need to report a stolen card,lost_or_stolen_card
+When will I receive the card?,card_delivery_estimate
+Someone else made a Direct Debit transaction on my account,direct_debit_payment_not_recognised
+What can I do if I lost my card?,lost_or_stolen_card
+I recently made a transfer that I would like to cancel,cancel_transfer
+Why and I being charged this fee?,card_payment_fee_charged
+What documentation do you accept for the identity check?,verify_my_identity
+"I'm stuck here at your broken ATM and I don't know what to do next. Asked for 30 pounds, got 10. ATM said I got 30. Something very wrong here and I want my money now!",wrong_amount_of_cash_received
+What's the procedure for canceling a purchase?,request_refund
+I was charged the wrong exchange rate on a purchase,card_payment_wrong_exchange_rate
+Is there a reason behind why my transfer did not work?,failed_transfer
+Why does my statement show a $1 charge on my account?,extra_charge_on_statement
+Can I use my account without verifying identity?,why_verify_identity
+"I desperately need to transfer something from China, Please give me the wait time.",transfer_timing
+Is there a tracking number for the card you sent me?,card_arrival
+"My card payment was reverted, why?",reverted_card_payment?
+I made a purchase but the exchange rate is wrong?,card_payment_wrong_exchange_rate
+How many times can I auto top-up?,automatic_top_up
+I got an cancellation error when I was topping up.,top_up_reverted
+can you share card tracking number?,card_arrival
+How do I go about changing my PIN?,change_pin
+It didn't give me my cash,wrong_amount_of_cash_received
+Change my pin?,change_pin
+Do you have any accounts for children ?,age_limit
+"Its been 3 days, How long will my transfer take to get to my wallet?",transfer_timing
+I was charged for using my card?,card_payment_fee_charged
+"This is frustrating, I'm at work and my transfers are not going through. I keep getting an error message, I do not have time for this.",beneficiary_not_allowed
+im worried about fraud how do you protect my account,verify_my_identity
+"My mother deposited a cheque into my account last week, why is it still not showing up?",balance_not_updated_after_cheque_or_cash_deposit
+"Hi, i just topped up my phone and the money was deducted but it seems to have deducted the same amount again! please help!",top_up_reverted
+Where do I get a disposable virtual card?,get_disposable_virtual_card
+I didn't see any reason why my transfer was declined. What gives?,declined_transfer
+"When I withdrew money from my account the other day, I noticed that there was a fee.  I didn't think that there were any fees for withdrawals...?  How much will I be charged?",cash_withdrawal_charge
+My account shows I made a debit payment to someone that I can't recall and would like to find out who the payment was made to.,direct_debit_payment_not_recognised
+"I didn't mean to do the transfer, is there any way to cancel it?",cancel_transfer
+"I can't see if the transfer I did a couple days ago is in my account yet. I double checked my info before sending, too. Can you check this?",transfer_not_received_by_recipient
+How do I take a block off my card?,pin_blocked
+I want a refund,request_refund
+The amount of cash I selected to withdraw is different than what I received.,wrong_amount_of_cash_received
+Does your app allow currency exchanges between USD and GBP?,exchange_via_app
+"I want to top up my account by a bank transfer, but will I be charged?",top_up_by_bank_transfer_charge
+I need to know where my funds come from.,verify_source_of_funds
+There is a direct debit payment on my account that I didn't authorize.,direct_debit_payment_not_recognised
+Rates were applied wrong while using foreign currency at an ATM.,wrong_exchange_rate_for_cash_withdrawal
+How would I use a disposable card?,get_disposable_virtual_card
+What's the reason for needing to verify my identity?,why_verify_identity
+If I want to select a new PIN what do I do?,change_pin
+"I need to activate my card, how is that done?",activate_my_card
+Where can I find a list of descriptions the disposable cards have?,disposable_card_limits
+My card payment has been cancelled,reverted_card_payment?
+how do I speed up identity verification?,why_verify_identity
+There is a 1£ charge that appears as pending on my statement. What is that? I haven't purchased anything for a pound there.,extra_charge_on_statement
+Are there any fees associated with receiving money?,top_up_by_bank_transfer_charge
+What is the top-up limit?,top_up_limits
+I believe i was charged for making a withdrawal after i went grocery shopping. Are you guys charging for this now?,cash_withdrawal_charge
+What do I owe for a new card?,order_physical_card
+"Hi, Today i have withdrawn cash from ATM but i got wrong amount and in the app it is showing much more amount than that.",wrong_amount_of_cash_received
+I don't recognize this debit transaction in my billing statement?,direct_debit_payment_not_recognised
+"I just transferred my friend money, but she hasn't received it yet, and it's been a few hours. Can you tell me when to expect it to go through?",transfer_not_received_by_recipient
+My latest transfer seems to be missing.,balance_not_updated_after_bank_transfer
+"Could not complete transfer, states 'declined'",declined_transfer
+What are the currencies and cards that are supported with my account?,supported_cards_and_currencies
+I can't use my card for anything,card_not_working
+My account is showing a double charge.,transaction_charged_twice
+My card payment has been pending for a long time now. Why is it taking so long to take. It should have already made it through.,pending_card_payment
+There is a direct debit patentp that I haven't authorized.,direct_debit_payment_not_recognised
+"Unbeknownst to me, there was an additional charge on my prior transaction. A notification of sorts should be required and explained before future payments are made.",card_payment_fee_charged
+Could you please tell me why my purchases from this morning say payment is pending?,pending_card_payment
+I received a fee I should not have.,card_payment_fee_charged
+Is there any way to get another card on the same account?,getting_spare_card
+I thought that transfers are free. Why was I charged an extra fee?,transfer_fee_charged
+Transfers from the US how long will the wait be?,transfer_timing
+I think you reverted my top up.,top_up_reverted
+How do I fix a transaction to the wrong account?,cancel_transfer
+I sent some money but the intended recipient says it hasn't arrived,transfer_not_received_by_recipient
+How can I locate the virtual card?,getting_virtual_card
+Can I make transfers before my identity verification?,why_verify_identity
+Hold old do my kids have to be to use the service?,age_limit
+I tried to buy something online but my funds were transferred back to my account. What is happening?,reverted_card_payment?
+"My phone is lost I don't want someone to use my account, what can I do?",lost_or_stolen_phone
+How do I activate my new card I just got?,activate_my_card
+"I just got my new card, how do I activate it?",activate_my_card
+"I made a mistake and did a transaction to a wrong account, can I cancel?",cancel_transfer
