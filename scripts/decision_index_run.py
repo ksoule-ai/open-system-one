@@ -13,6 +13,16 @@ Run with the kit's Python (it imports decision_index):
     $K scripts/decision_index_run.py launch --run R --profile oso-granite-3b-wide --servers 3
     $K scripts/decision_index_run.py score  --run R
 
+Other rows and targets (e.g. the dev set against Jev on OpenRouter):
+
+    $K scripts/decision_index_run.py split  --run R --rows evals/decision-index-dev/dev-rows.jsonl.gz
+    $K scripts/decision_index_run.py launch --run R --base-url https://openrouter.ai/api \
+        --profile jev-1.13 --token-env OPENROUTER_API_KEY
+    $K scripts/decision_index_run.py score  --run R --rows evals/decision-index-dev/dev-rows.jsonl.gz
+
+`--rows` takes every row of that file (no edition filter); `score --rows` scores them with the
+kit's 0.2 scorer in place of the suite. `--base-url` sends to that server instead of starting ours.
+
 `launch` again resumes: finished requests are skipped and errored ones retried (kit behavior).
 `launch --engine random` runs the kit's random baseline instead (no servers; a dry run).
 Our servers need the model backend's env (HF_ENDPOINT_URL, HF_TOKEN): source .env first.
@@ -35,8 +45,11 @@ KIT_PYTHON = KIT / ".venv/bin/python"
 def split(args):
     from decision_index.suite.io import Suite
 
-    suite = Suite(Path(args.suite_dir), "0.2")
-    keep = suite.in_edition
+    if args.rows:
+        paths, keep = [Path(args.rows)], lambda e: True
+    else:
+        suite = Suite(Path(args.suite_dir), "0.2")
+        paths, keep = suite.row_paths, suite.in_edition
     shard_dir = Path(args.run) / "shards"
     shard_dir.mkdir(parents=True, exist_ok=True)
     files = [
@@ -44,7 +57,7 @@ def split(args):
         for i in range(args.shards)
     ]
     n = seen = 0
-    for path in suite.row_paths:
+    for path in paths:
         from decision_index.suite.io import read_jsonl
 
         for row in read_jsonl(path):
@@ -61,6 +74,7 @@ def split(args):
         "every": args.every,
         "shards": args.shards,
         "suite_dir": str(args.suite_dir),
+        "rows_file": args.rows,
         "edition": "0.2",
     }
     (Path(args.run) / "split.json").write_text(json.dumps(meta, indent=2))
@@ -112,10 +126,14 @@ def launch(args):
     total = json.loads((run / "split.json").read_text())["rows"]
     servers, procs = [], []
     key = secrets.token_hex(16)
+    if args.base_url:
+        key = os.environ.get(args.token_env, "")
+        if not key:
+            raise SystemExit(f"{args.token_env} is not set")
     env = {**os.environ, "DECISION_INDEX_API_KEY": key, "OSO_API_KEY": key}
     try:
-        urls = []
-        if args.engine == "http":
+        urls = [args.base_url] if args.base_url else []
+        if args.engine == "http" and not args.base_url:
             for i in range(args.servers):
                 port = _free_port()
                 log = (run / f"server-{i}.log").open("a")
@@ -227,6 +245,8 @@ def score(args):
                     out.write(line)
                     n += 1
     print(json.dumps({"merged_rows": n}), flush=True)
+    if args.rows:
+        return score_rows(Path(args.rows), merged, args.name or run.name, merged_dir)
     subprocess.run(
         [
             str(KIT_PYTHON.resolve()),
@@ -247,6 +267,44 @@ def score(args):
     )
 
 
+def score_rows(rows: Path, merged: Path, name: str, out: Path):
+    """Per-benchmark scores from the kit's 0.2 scorers over `rows` (no composite index: the
+    index needs every 0.2 benchmark and the frozen suite). Same steps as the kit's
+    `score_run_v02` up to its benchmark summary."""
+    import collections
+
+    from decision_index.pipeline import rnd
+    from decision_index.scoring import added, index02
+    from decision_index.scoring.report import benchmark_summary, load_results
+    from decision_index.suite.io import atomic_json, read_jsonl
+
+    results = load_results(merged)
+    added_ids = {int(n) for n in index02.spec()["added"]}
+    base, extra = [], collections.defaultdict(list)
+    for r in read_jsonl(rows):
+        n = r["_evaluation"]["catalog_id"]
+        (extra[n] if n in added_ids else base).append(r)
+    summary = benchmark_summary(None, results, name, rows=base)
+    for n, rs in sorted(extra.items()):
+        if not any(results.get(r["_evaluation"]["run_id"], {}).get("status") == "ok" for r in rs):
+            # the kit's added report crashes with no answered row (mean of an empty generator)
+            st = collections.Counter(results.get(r["_evaluation"]["run_id"], {}).get("status", "pending") for r in rs)
+            summary["benchmarks"].append({"catalog_id": n, "dataset": rs[0]["_evaluation"]["dataset"], "requests": len(rs), "answered": 0, "unsupported": st["unsupported"], "errors": st["error"], "abstained": st["abstained"], "pending": st["pending"], "metric": "accuracy", "score": None, "median_ms": None})
+            continue
+        rep = added.report(n, rs, results)
+        entry = {k: rep[k] for k in ("catalog_id", "dataset", "requests", "answered", "unsupported", "errors", "abstained", "pending", "metric", "score", "median_ms")}
+        entry.update(scored_requests=rep["answered"], detail={"field_accuracy": rep["field_accuracy"], "scored_fields": rep["scored_fields"], "chance_on_rows": rep["chance"]})
+        summary["benchmarks"].append(entry)
+    summary["edition"] = "0.2"
+    summary["rows_file"] = str(rows)
+    atomic_json(out / "benchmark-summary.json", summary)
+    table = [
+        {k: (rnd(v) if isinstance(v, float) else v) for k, v in b.items() if k in ("catalog_id", "dataset", "requests", "answered", "unsupported", "errors", "metric", "score")}
+        for b in sorted(summary["benchmarks"], key=lambda b: b["catalog_id"])
+    ]
+    print(json.dumps({"counts": summary.get("counts"), "benchmarks": table}, indent=1))
+
+
 def main():
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -255,11 +313,14 @@ def main():
     s.add_argument("--shards", type=int, default=48)
     s.add_argument("--every", type=int, default=1, help="keep every Nth row (a pilot subset)")
     s.add_argument("--suite-dir", default=str(KIT / "suite-0.2"))
+    s.add_argument("--rows", help="split this rows file instead of the suite")
     s.set_defaults(fn=split)
     lp = sub.add_parser("launch")
     lp.add_argument("--run", required=True)
     lp.add_argument("--engine", default="http", choices=["http", "random"])
-    lp.add_argument("--profile", default="oso-granite-3b-wide")
+    lp.add_argument("--profile", default="oso-granite-3b-wide", help="the request's model")
+    lp.add_argument("--base-url", help="send to this server instead of starting ours")
+    lp.add_argument("--token-env", default="OPENROUTER_API_KEY", help="bearer key for --base-url")
     lp.add_argument("--servers", type=int, default=5)
     lp.add_argument("--report-every", type=float, default=60)
     lp.set_defaults(fn=launch)
@@ -267,6 +328,7 @@ def main():
     sc.add_argument("--run", required=True)
     sc.add_argument("--suite-dir", default=str(KIT / "suite-0.2"))
     sc.add_argument("--name")
+    sc.add_argument("--rows", help="score against this rows file instead of the suite")
     sc.set_defaults(fn=score)
     args = ap.parse_args()
     args.fn(args)

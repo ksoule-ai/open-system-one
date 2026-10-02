@@ -443,7 +443,7 @@
       }
     }
   },
-  "kit": "/Users/ksoule/Documents/dev/open-system-one/decision-index",
+  "kit": "/Users/ksoule/Documents/GitHub/open-system-one/external/decision-index",
   "samples_per_benchmark": 100,
   "seed": 20261002,
   "suite": "Decision Index 0.2 (kit commit 19ad28e)"

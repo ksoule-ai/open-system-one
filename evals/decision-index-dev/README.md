@@ -144,7 +144,7 @@ with attribution. Check those before pushing this repository anywhere public.
 ## Rebuild
 
 ```bash
-K=~/Documents/dev/open-system-one/decision-index     # the kit, with work/ and suite-0.2/ built
+K=external/decision-index     # the kit, with work/ and suite-0.2/ built
 $K/.venv/bin/python scripts/decision_index_dev.py                 # everything
 $K/.venv/bin/python scripts/decision_index_dev.py --only 59 61    # some benchmarks
 ```

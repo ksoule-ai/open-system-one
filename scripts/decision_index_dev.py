@@ -24,7 +24,7 @@ real build. `_evaluation` is attached with the same formula as the kit's freeze 
 prefixed `dev:` so they can never be mistaken for suite rows.
 
 Run with the kit's Python (needs pyarrow, pandas, huggingface_hub, tiktoken from the kit's extras):
-    K=~/Documents/dev/open-system-one/decision-index
+    K=external/decision-index
     $K/.venv/bin/python scripts/decision_index_dev.py [--only 24 59 ...]
 """
 
@@ -43,7 +43,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-KIT = Path(os.environ.get("DI_KIT", "~/Documents/dev/open-system-one/decision-index")).expanduser()
+KIT = Path(os.environ.get("DI_KIT", REPO / "external/decision-index")).expanduser()
 WORK = KIT / "work"  # the real suite build (sources + adapter outputs)
 SUITE = KIT / "suite-0.2"  # the scored 0.2 suite
 DEVWORK = KIT / "work-dev"  # adapter workspace for held-out conversions (rebuildable)
