@@ -60,5 +60,102 @@ profiles:
       # Cloudflare is the only provider; pin it so a new provider can't silently drop logprobs.
       provider: {order: [cloudflare], allow_fallbacks: false}
 
+  # The same two models through the local LiteLLM gateway (kate-litellm, LITELLM_BASE_URL ends in
+  # /v1), which holds the provider keys. Settings are copied from the direct profiles above; only
+  # the route differs. Verified 2026-10-02: logprobs pass through (256 on the HF endpoint, 20 on
+  # OpenRouter → Cloudflare).
+  oso-granite-3b-wide-litellm:
+    backend: hf_endpoint
+    base_url: ${LITELLM_BASE_URL}
+    api_key_env: LITELLM_API_INFERENCE_KEY
+    model_id: hf/ibm-granite/granite-switch-4.1-3b-preview   # the gateway's name for the endpoint
+    description: Granite 4.1 3B (HF vLLM via LiteLLM), up to 200 options per choice, prompt default@3
+    release_date: "2026-10-02"
+    prompt: default@3
+    strategy: warm_fanout
+    top_logprobs: 256
+    base_top_logprobs: 20
+    max_options: 200
+    max_tokens: 1
+    temperature: 0
+    concurrency: 64
+    max_inflight_requests: 256
+    timeout: 60
+
+  oso-granite-3b-wide-doc-litellm:
+    backend: hf_endpoint
+    base_url: ${LITELLM_BASE_URL}
+    api_key_env: LITELLM_API_INFERENCE_KEY
+    model_id: hf/ibm-granite/granite-switch-4.1-3b-preview   # the gateway's name for the endpoint
+    description: Granite 4.1 3B (HF vLLM via LiteLLM), up to 200 options per choice, prompt default@4 (state as a document)
+    release_date: "2026-10-02"
+    prompt: default@4                     # experimental: state sent as a chat-template document
+    strategy: warm_fanout
+    top_logprobs: 256
+    base_top_logprobs: 20
+    max_options: 200
+    max_tokens: 1
+    temperature: 0
+    concurrency: 64
+    max_inflight_requests: 256
+    timeout: 60
+
+  oso-granite-micro-cf-litellm:
+    backend: openrouter
+    base_url: ${LITELLM_BASE_URL}
+    api_key_env: LITELLM_API_INFERENCE_KEY
+    model_id: openrouter/ibm-granite/granite-4.0-h-micro
+    description: Granite 4.0 Micro 3B via LiteLLM → OpenRouter (Cloudflare), prompt default@1
+    release_date: "2026-10-02"
+    prompt: default@1
+    strategy: fanout
+    top_logprobs: 20
+    max_options: 20
+    max_tokens: 1
+    temperature: 0
+    concurrency: 8
+    max_inflight_requests: 64
+    timeout: 30
+    extra_body:
+      provider: {order: [cloudflare], allow_fallbacks: false}
+
+  oso-granite-3b-v3-litellm:
+    # oso-granite-3b (20 options, 20 top logprobs) with prompt default@3, through the gateway.
+    backend: hf_endpoint
+    base_url: ${LITELLM_BASE_URL}
+    api_key_env: LITELLM_API_INFERENCE_KEY
+    model_id: hf/ibm-granite/granite-switch-4.1-3b-preview
+    description: Granite 4.1 3B (HF vLLM via LiteLLM), up to 20 options per choice, prompt default@3
+    release_date: "2026-10-02"
+    prompt: default@3
+    strategy: warm_fanout
+    top_logprobs: 20
+    max_options: 20
+    max_tokens: 1
+    temperature: 0
+    concurrency: 8
+    max_inflight_requests: 64
+    timeout: 30
+
+  oso-granite-micro-cf-v3-litellm:
+    # oso-granite-micro-cf-litellm with default@3, the Decision Index prompt (house rule).
+    backend: openrouter
+    base_url: ${LITELLM_BASE_URL}
+    api_key_env: LITELLM_API_INFERENCE_KEY
+    model_id: openrouter/ibm-granite/granite-4.0-h-micro
+    description: Granite 4.0 Micro 3B via LiteLLM → OpenRouter (Cloudflare), prompt default@3
+    release_date: "2026-10-02"
+    prompt: default@3
+    strategy: fanout
+    top_logprobs: 20
+    max_options: 20
+    max_tokens: 1
+    temperature: 0
+    concurrency: 8
+    max_inflight_requests: 64
+    timeout: 30
+    extra_body:
+      provider: {order: [cloudflare], allow_fallbacks: false}
+
 aliases:
   oso-latest: oso-granite-3b

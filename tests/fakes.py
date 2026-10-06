@@ -53,9 +53,11 @@ class FakeClient:
         self.overloaded = overloaded
         self.error = error
         self.calls: list[list[dict]] = []
+        self.documents: list[list[dict] | None] = []
 
-    async def complete(self, messages, *, prefill, top_logprobs=20):
+    async def complete(self, messages, *, prefill, top_logprobs=20, documents=None):
         self.calls.append(messages)
+        self.documents.append(documents)
         if self.overloaded:
             raise BackendOverloaded("fake overload", retry_after=2)
         if self.error is not None:

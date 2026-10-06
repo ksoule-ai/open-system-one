@@ -123,3 +123,17 @@ def test_request_top_logprobs():
     assert request_top_logprobs(p, 3) == 20
     assert request_top_logprobs(p, 77) == 154
     assert request_top_logprobs(p, 151) == 256
+
+
+def test_state_as_document_leaves_the_user_message_to_the_question():
+    v3 = load_prompt("configs/prompts", "default@3")
+    v4 = load_prompt("configs/prompts", "default@4")
+    state = {"subject": "Payouts", "tags": ["urgent"]}
+    q = questions({"k": {"type": "noul", "instructions": "Urgent?"}}, state=state)["k"]
+    in_user, as_doc = render_question(state, q, v3), render_question(state, q, v4)
+    assert in_user.documents == [] and "subject: Payouts" in in_user.messages[-1]["content"]
+    assert as_doc.documents == [{"doc_id": "state", "text": "subject: Payouts\ntags:\n- urgent"}]
+    assert "Payouts" not in str(as_doc.messages)
+    assert [m["role"] for m in as_doc.messages] == ["user"]  # the template supplies the system turn
+    assert as_doc.messages[-1]["content"].startswith("Question: Urgent?")
+    assert as_doc.labels == in_user.labels

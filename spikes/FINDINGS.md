@@ -130,3 +130,46 @@ directory and rerun with `uv run --env-file .env python spikes/<script>.py`.
   run inside it.
 - `.env` has `MODEL_ID` and `HF_TOKEN_INFERENCE`, which aren't in `.env.example`; `OSO_API_KEY` isn't
   set yet.
+
+# Later spikes (2026-10-02 to 2026-10-06)
+
+Write-ups with all numbers are in [`results/`](../results/README.md); the method is documented in
+[`docs/logprob-decisions.md`](../docs/logprob-decisions.md). This section records what each new script is
+for and the facts we learned about the stack.
+
+| Script | What it does |
+| --- | --- |
+| `ragtruth_hallucination.py` | Hallucination adapter on the 100 RAGTruth dev samples (inputs from RAGTruth's source records); `make_backend()` is the shared Mellea backend for the adapter spikes |
+| `hallucination_adapter_dev.py` | Hallucination adapter on HoVer and NLI4CT dev; `--user-message` |
+| `factuality_adapter_dev.py` | Factuality adapter on RAGTruth, HoVer, NLI4CT dev; `--default-formatting` |
+| `factuality_adapter_suite.py` | Any of factuality / hallucination / guardian-core on suite or dev rows, writing kit-format results scored by the kit; reads P("yes") from logprobs; resumable, sharded |
+| `nli_adapters_dev.py`, `nli_adapters_analyze.py` | Answerability and factuality on ANLI and ContractNLI with P("yes"); threshold mapping onto three classes |
+| `guardian_raw_dev.py` | Guardian groundedness sent as raw text via Mellea's completions path, to change the activation sequence |
+| `rerun_sample.py` | Re-send one dev sample to several engines and the adapter, saving request, responses, traces and gateway log ids |
+
+Facts about the stack:
+
+- **LiteLLM gateway.** All model calls since 2026-10-02 go through a local LiteLLM gateway
+  (`LITELLM_BASE_URL`, `LITELLM_API_INFERENCE_KEY`; config in the separate `kate-litellm` repo). It passes
+  `logprobs` / `top_logprobs` (256 on the HF endpoint), `documents`, `chat_template_kwargs` and
+  `structured_outputs` through to vLLM, and OpenRouter's `provider` routing through to OpenRouter. Jev is
+  reached through a pass-through route `POST /v1/systemone` → `https://openrouter.ai/api/v1/systemone`;
+  per-key pass-through permissions are a LiteLLM premium feature, so that route is used with the master
+  key. Log lookup: `/spend/logs?request_id=…` and the paginated `/spend/logs/ui`.
+- **Mellea 0.8.0 talks to OpenAI-compatible servers with chat requests** (`chat.completions.create`),
+  including adapter calls; the completions endpoint is used only by `generate_from_raw`. So the model's
+  chat template, applied by vLLM, writes the final prompt (system turn with documents, adapter
+  activation tokens).
+- **Granite chat templates** take documents as a `documents` field and write them into the system turn
+  with fixed wording ("You are a helpful assistant with access to the following documents…"). A message
+  with `role: document` is ignored. OpenRouter (Cloudflare) drops the `documents` field.
+- **The vLLM endpoint has no tool calling enabled**: `tool_choice: auto` and `required` both need
+  `--enable-auto-tool-choice --tool-call-parser …` in the container args.
+- **Adapter activation** is driven by `chat_template_kwargs.adapter_name` in the chat template
+  (`chat_template.jinja` in the model repo): LoRA adapters put their token at the start of the prompt;
+  aLoRA adapters replace the first token of their invocation text (`<guardian>` → `<|guardian-core|>` +
+  `guardian>`). Mellea downloads adapter configs from the model repo, which needs `huggingface_hub`
+  (`uv run --with huggingface_hub`; it is Mellea's `switch` extra, not a project dependency).
+- **The HF endpoint scales to zero and is sometimes paused.** A paused endpoint answers 400 "The endpoint
+  is paused"; a waking one answers 503 for about 3 minutes. Long batch jobs should wait for a 200 first and
+  retry errored rows.

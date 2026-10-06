@@ -40,7 +40,12 @@ class CallResult:
 
 class ModelClient(Protocol):
     async def complete(
-        self, messages: list[dict[str, str]], *, prefill: bool, top_logprobs: int
+        self,
+        messages: list[dict[str, str]],
+        *,
+        prefill: bool,
+        top_logprobs: int,
+        documents: list[dict[str, str]] | None = None,
     ) -> CallResult: ...
 
 
@@ -82,11 +87,23 @@ class MelleaClient:
             max_retries=0,
         )
 
-    def _model_options(self, prefill: bool, top_logprobs: int) -> dict[str, Any]:
+    def _model_options(
+        self, prefill: bool, top_logprobs: int, documents: list[dict[str, str]] | None = None
+    ) -> dict[str, Any]:
         from mellea.backends.model_options import ModelOption
 
         p = self.profile
         extra_body = dict(p.extra_body)
+        if documents:
+            if p.backend != "hf_endpoint":
+                # OpenRouter ignores `documents`: the model would answer without the state.
+                raise BackendError(
+                    f"profile {p.name}: its prompt sends the state as a document, which "
+                    f"backend {p.backend} does not pass to the chat template"
+                )
+            # vLLM hands `documents` to the chat template. Mellea 0.8.0's chat path renders a
+            # Message's own documents into its text instead, so they go through extra_body.
+            extra_body["documents"] = documents
         if prefill and p.backend == "hf_endpoint":
             # vLLM continues the final assistant message instead of starting a new turn.
             extra_body.update({"continue_final_message": True, "add_generation_prompt": False})
@@ -101,13 +118,19 @@ class MelleaClient:
         return options
 
     async def complete(
-        self, messages: list[dict[str, str]], *, prefill: bool, top_logprobs: int
+        self,
+        messages: list[dict[str, str]],
+        *,
+        prefill: bool,
+        top_logprobs: int,
+        documents: list[dict[str, str]] | None = None,
     ) -> CallResult:
         import openai
         from mellea.stdlib.components.chat import Message
         from mellea.stdlib.context.chat import ChatContext
 
         backend = await self._get_backend()
+        model_options = self._model_options(prefill, top_logprobs, documents)
         ctx = ChatContext()
         for m in messages[:-1]:
             ctx = ctx.add(Message(m["role"], m["content"]))
@@ -118,7 +141,7 @@ class MelleaClient:
             t1 = time.perf_counter()
             try:
                 mot, _ = await backend.generate_from_context(
-                    action, ctx, model_options=self._model_options(prefill, top_logprobs)
+                    action, ctx, model_options=model_options
                 )
                 await mot.avalue()
             except openai.APIStatusError as e:

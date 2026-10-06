@@ -125,6 +125,15 @@ build. Where a slot needed more than a straight copy, it is listed here:
 - Some benchmarks expand one sample into several requests, exactly as in the suite: ACOS (category chunks
   of 64), GSM8K (4- and 10-choice), RouterBench (0- and 5-shot).
 
+## Scoring
+
+Score a run with `scripts/decision_index_run.py score --run R --rows evals/decision-index-dev/dev-rows.jsonl.gz`
+(the kit's 0.2 scorers, per benchmark; there is no composite index on the dev set). Compare runs on
+**chance-corrected** skill: `scripts/dev_chance.py` measures chance on these rows and writes every run's
+skill to `runs/di-dev/chance.json`. This matters most for the balanced binary benchmarks: RAGTruth is
+50/50 here but 35% hallucinated in the suite, so a model that flags most responses looks much better here
+in raw F1 (see `results/dev-set.md`).
+
 ## Not covered
 
 - **SATA-Bench**: no held-out data exists (the HF release's "extra" items are the suite's questions with

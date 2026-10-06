@@ -14,11 +14,27 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 StructuredFormat = Literal["yaml", "json", "json_compact"]
 
 
+class StateDocumentConfig(BaseModel):
+    """The fixed fields of the document that carries the state (`placement: document`)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    doc_id: str = "state"
+    title: str | None = None
+
+
 class StateConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     template: str  # Jinja; gets `state` (already serialized to text)
     format: StructuredFormat = "yaml"  # how object / array states are serialized
+    # Where the rendered state goes. `user`: a block of the user message (see `user_layout`).
+    # `document`: the text of one document passed to the model's chat template through the
+    # request's `documents` field; Granite's template writes documents into the system turn, with
+    # its own fixed wording around them. Only backends that apply the chat template with
+    # `documents` honor it (vLLM does; OpenRouter drops the field, so profiles there are refused).
+    placement: Literal["user", "document"] = "user"
+    document: StateDocumentConfig = StateDocumentConfig()
 
 
 class QuestionTypeConfig(BaseModel):
@@ -104,6 +120,14 @@ class PromptConfig(BaseModel):
 
     # Set by the loader, not the file.
     content_hash: str = ""
+
+    @model_validator(mode="after")
+    def _state_in_one_place(self) -> "PromptConfig":
+        if self.state.placement == "document" and "state" in self.user_layout:
+            raise ValueError("state.placement is document: remove `state` from user_layout")
+        if self.state.placement == "user" and "state" not in self.user_layout:
+            raise ValueError("user_layout must include `state` unless state.placement is document")
+        return self
 
     @property
     def ref(self) -> str:

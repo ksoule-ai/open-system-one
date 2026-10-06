@@ -108,7 +108,8 @@ defines:
   shared prefix across all questions in a request (see section 5).
 - **System text.**
 - **State rendering** — header, and how objects and arrays are serialized (pretty JSON, compact JSON, or
-  YAML).
+  YAML). **State placement** — a block of the user message (`user`, the default) or a chat-template
+  document (`document`, vLLM only; tried in `default@4` and worse on the dev set).
 - **Question template** (Jinja, rendered into Mellea `Message` components) — how instructions, options, and
   criteria appear, per question type.
 - **Label scheme** per question type, token-matching rules, and the missing-label policy.
@@ -247,10 +248,19 @@ open-system-one/
 ├── configs/
 │   ├── models.yaml            # model profiles + aliases
 │   └── prompts/
-│       └── default.yaml       # prompt config (versioned)
+│       └── default@<n>.yaml   # prompt configs (versioned; default@3 is the Decision Index prompt)
+├── docs/
+│   └── logprob-decisions.md   # how-to: answering noul/choice/score from label-token logprobs
+├── examples/                  # decide.py (whole request, in-process), protocol_steps.py (each step)
 ├── evals/
-│   └── sanity-v0.jsonl        # eval cases
-├── runs/                      # traces, eval results, Jev cache (gitignored)
+│   ├── sanity-v0.jsonl        # eval cases
+│   └── decision-index-dev/    # Decision Index dev set (34 benchmarks, not in the scored suite)
+├── results/                   # write-ups: suite runs, dev-set runs, adapter experiments
+├── proposals/                 # design proposals (adapter router)
+├── scripts/                   # Decision Index runner, dev-set builder, dev chance correction
+├── spikes/                    # experiments; FINDINGS.md lists them
+├── external/                  # decision-index kit checkouts (0.2 and 0.2.1), suite, kit runs (gitignored)
+├── runs/                      # traces, eval results, Jev cache, dev runs (gitignored)
 ├── src/open_system_one/
 │   ├── server/                # FastAPI app, auth, errors, request ids
 │   ├── schema/                # generated TypeSafe models
@@ -291,7 +301,10 @@ uv run pytest
 ## Environment
 - `OSO_API_KEY` — bearer key(s) our server accepts.
 - `OPENROUTER_API_KEY` — OpenRouter profiles **and** the Jev baseline (OpenRouter's System One API).
-- `HF_TOKEN`, `HF_ENDPOINT_URL` — HF Inference Endpoint profiles.
+- `HF_TOKEN`, `HF_ENDPOINT_URL` — HF Inference Endpoint profiles (direct).
+- `LITELLM_BASE_URL`, `LITELLM_API_INFERENCE_KEY` — the local LiteLLM gateway (`*-litellm` profiles, the
+  current default route to both the HF endpoint and OpenRouter). Jev goes through the gateway's
+  `/v1/systemone` pass-through, which needs the gateway's master key (per-key pass-through is premium).
 - `OLLAMA_HOST` — default `http://localhost:11434`.
 - Unit tests and CI run offline against fixtures; only integration tests hit live backends or Jev.
 
@@ -316,6 +329,20 @@ data the 0.2 suite does not score (held-out splits, unused BFCL categories, Fore
 window, suite-unselected rows, generator dev rows, 50 hand-written PhishNChips emails), raw records +
 kit-adapter conversions, provenance per sample. Built by `scripts/decision_index_dev.py`; see its README.
 Tune on this, never on the suite.
+
+Status (2026-10-06): see `results/README.md` and `docs/logprob-decisions.md`.
+- **Gateway.** Calls now go through a local LiteLLM gateway (`*-litellm` profiles in `models.yaml`);
+  `.env` holds only the gateway's variables. Mellea 0.8.0 sends chat requests, so vLLM's chat template
+  builds the final prompt.
+- **Suite, edition 0.2.1** (kit 0.2.1 as a worktree at `external/decision-index-0.2.1`; rescoring needs no
+  rerun): Granite 3B `default@3` **24.92**, Granite 4.0 Micro `default@3` **16.38** (20-option cap: 15,061
+  requests unsupported), Jev 1.13 **57.91** (board).
+- **Dev set**, chance-corrected with `scripts/dev_chance.py`: mean skill on 28 shared benchmarks 3B 0.303,
+  Micro 0.261, Jev 0.579. `default@4` (state as a document) is worse (0.255). Run-to-run noise up to 0.02.
+- **Granite Switch adapters** (hallucination, factuality, guardian groundedness, answerability) on RAGTruth,
+  HoVer, NLI4CT, ANLI, ContractNLI: each wins on one benchmark and loses on others (`results/adapters.md`).
+  The adapter router (`proposals/adapter-router.md`) is not built; the vLLM endpoint has no tool calling.
+- Offline tests: 37 pass. Not built yet: Ollama, `batched`, the `tools: null` workaround.
 
 Phase 0 results so far (2026-09-26; details in `spikes/FINDINGS.md`). Spikes 1–6 are done for
 OpenRouter, the HF endpoint, the SDK, and Jev; Ollama is pending.

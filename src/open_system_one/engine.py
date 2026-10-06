@@ -137,7 +137,9 @@ def _usage(results: list[CallResult], uniques: list[_Unique]) -> tuple[dict[str,
             output_tokens += usage["completion_tokens"]
         else:  # rough fallback: ~4 characters per token
             estimated = True
-            input_tokens += sum(len(m["content"]) for m in u.rendered.messages) // 4
+            parts = [m["content"] for m in u.rendered.messages]
+            parts += [d["text"] for d in u.rendered.documents]
+            input_tokens += sum(len(part) for part in parts) // 4
             output_tokens += 1
     return {"input_tokens": input_tokens, "output_tokens": output_tokens}, estimated
 
@@ -190,8 +192,13 @@ async def answer_request(
         calls.append(entry)
         top_k = request_top_logprobs(profile, len(u.rendered.labels))
         entry["top_logprobs"] = top_k
+        if u.rendered.documents:
+            entry["documents"] = u.rendered.documents
         result = await client.complete(
-            u.rendered.messages, prefill=u.rendered.prefill, top_logprobs=top_k
+            u.rendered.messages,
+            prefill=u.rendered.prefill,
+            top_logprobs=top_k,
+            documents=u.rendered.documents or None,
         )
         entry.update(
             queue_wait_ms=round(result.queue_wait * 1000, 1),

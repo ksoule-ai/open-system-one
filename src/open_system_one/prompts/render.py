@@ -12,7 +12,7 @@ Question keys (the names in the request's `questions` map) are never passed to t
 """
 
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from functools import lru_cache
 from typing import Any
 
@@ -31,6 +31,8 @@ class RenderedQuestion:
     labels: list[str]  # answer labels, one per option, in option order
     options: list[str]  # what each label stands for: "true"/"false", choice keys, or "0".."n"
     prefill: bool  # the last message is an assistant prefill the model should continue
+    # Documents for the chat template (the state, when the config places it there); else empty.
+    documents: list[dict[str, str]] = field(default_factory=list)
 
 
 def serialize(value: Any, fmt: StructuredFormat) -> str:
@@ -155,4 +157,12 @@ def render_question(state: Any, question: AnyQuestion, config: PromptConfig) -> 
     messages.append({"role": "user", "content": user})
     if prefill:
         messages.append({"role": "assistant", "content": primer})
-    return RenderedQuestion(messages=messages, labels=labels, options=options, prefill=prefill)
+    documents = []
+    if config.state.placement == "document":
+        doc = config.state.document
+        documents = [{"doc_id": doc.doc_id, "text": blocks["state"]}]
+        if doc.title is not None:
+            documents[0]["title"] = doc.title
+    return RenderedQuestion(
+        messages=messages, labels=labels, options=options, prefill=prefill, documents=documents
+    )
